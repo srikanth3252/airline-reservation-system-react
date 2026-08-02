@@ -14,7 +14,7 @@ function Mybookings() {
 
             try {
 
-                let res = await fetch("http://127.0.0.1:814/get_my_bookings", {
+                let res = await fetch("http://airline-backend-zdo5.onrender.com:814/get_my_bookings", {
 
                     method: "POST",
 

@@ -45,7 +45,7 @@ function Reset_password()
         }
         async function sendotp()
          {
-              let res=await fetch("http://127.0.0.1:814/send-otp",{
+              let res=await fetch("http://airline-backend-zdo5.onrender.com:814/send-otp",{
             
                   method:"POST",
                   headers:
@@ -88,7 +88,7 @@ function Reset_password()
         setmissingotp(false);
         async function verifyotp()
         {
-              let res=await fetch("http://127.0.0.1:814/verify-otp",{
+              let res=await fetch("http://airline-backend-zdo5.onrender.com:814/verify-otp",{
             
                   method:"POST",
                   headers:
@@ -165,7 +165,7 @@ function Reset_password()
         {
             try
             {
-                let res=await fetch("http://127.0.0.1:814/comparepassword",{
+                let res=await fetch("http://airline-backend-zdo5.onrender.com:814/comparepassword",{
                   method:"POST",
                   headers:
                   {

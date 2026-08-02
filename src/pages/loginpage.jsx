@@ -111,7 +111,7 @@ function Loginpage()
         setmissingpassword(false);
         async function verify_for_login()
         {
-            let res=await fetch("http://127.0.0.1:814/verify_for_login",{
+            let res=await fetch("http://airline-backend-zdo5.onrender.com:814/verify_for_login",{
 
                   method:"POST",
                   headers:
@@ -167,7 +167,7 @@ function Loginpage()
                 return;
              }
              setmissingemail(false);
-              let res=await fetch("http://127.0.0.1:814/send-otp",{
+              let res=await fetch("http://airline-backend-zdo5.onrender.com:814/send-otp",{
             
                   method:"POST",
                   headers:
@@ -224,7 +224,7 @@ function Loginpage()
         setmissingotp(false);
         async function verifyotp()
         {
-              let res=await fetch("http://127.0.0.1:814/verify-otp",{
+              let res=await fetch("http://airline-backend-zdo5.onrender.com:814/verify-otp",{
             
                   method:"POST",
                   headers:
@@ -296,7 +296,7 @@ function Loginpage()
          e.preventDefault();
          async function signup()
          {
-              let res=await fetch("http://127.0.0.1:814/sign-up",{
+              let res=await fetch("http://airline-backend-zdo5.onrender.com:814/sign-up",{
             
                   method:"POST",
                   headers:
