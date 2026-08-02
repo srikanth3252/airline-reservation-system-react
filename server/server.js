@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const db = require("./db");
@@ -12,7 +14,7 @@ const upload = multer({
 const store={};
 
 // Port number
-const port = 814;
+const port = process.env.PORT || 814;
 
 // Create server
 const app = express();
