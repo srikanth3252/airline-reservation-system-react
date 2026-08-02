@@ -1,0 +1,47 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+.Flightresutls{
+
+    min-height:100vh;
+
+    background:linear-gradient(135deg,#EAF4FF,#D6ECFF,#F7FBFF);
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    padding:60px 20px;
+}
+
+/* Heading */
+
+.h1{
+
+    font-size:42px;
+
+    color:#0D47A1;
+
+    font-weight:700;
+
+    margin-bottom:10px;
+
+    text-align:center;
+}
+
+.sub-heading{
+
+    font-size:18px;
+
+    color:#5E6E82;
+
+    margin-bottom:40px;
+
+    text-align:center;
+}

@@ -1,0 +1,96 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+.passenger-card
+{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+
+    background:#ffffff;
+    padding:25px;
+    border-radius:15px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,0.12);
+    border:1px solid #dbe7f3;
+}
+
+.passenger-card h1
+{
+    color:#1565C0;
+    font-size:24px;
+    border-bottom:2px solid #dbe7f3;
+    padding-bottom:10px;
+}
+
+.passenger-card-flex1
+{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.passenger-card-flex1 label
+{
+    font-size:17px;
+    font-weight:600;
+    color:#0D47A1;
+}
+
+.passenger-card-flex1 input
+{
+    width:100%;
+    padding:12px 15px;
+    font-size:16px;
+
+    border:1px solid #b0bec5;
+    border-radius:8px;
+
+    outline:none;
+    transition:0.3s;
+}
+
+.passenger-card-flex1 input:focus
+{
+    border-color:#1E88E5;
+    box-shadow:0 0 8px rgba(30,136,229,0.25);
+}
+
+.flex1-radio
+{
+    display:flex;
+    flex-direction: row;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.flex1-radio label
+{
+    font-size:17px;
+    font-weight:600;
+    color:#0D47A1;
+}
+
+.flex1-radio input[type="radio"]
+{
+    transform:scale(1.15);
+    cursor:pointer;
+}
+
+.flex1-radio span
+{
+    font-size:16px;
+    color:#333;
+}
+
+.passenger-card:hover
+{
+    transform:translateY(-2px);
+    transition:0.3s;
+}

@@ -1,0 +1,310 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+.profile
+{
+    position: fixed;
+    top: 40px;
+    right: 60px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-icon
+{
+    width: 80px;
+    height: 80px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 45px;
+
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.profile-icon:hover
+{
+    transform: scale(1.08);
+}
+
+.profile-select
+{
+    width: 170px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    cursor: pointer;
+    background: white;
+}
+/* ================= PAGE ================= */
+
+.flightssearchpage{
+
+    min-height:100vh;
+
+    background:linear-gradient(135deg,#EAF4FF,#D6ECFF,#F7FBFF);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:40px;
+}
+
+/* ================= CARD ================= */
+
+.in-box{
+
+    width:500px;
+
+    background:#FFFFFF;
+
+    border-radius:18px;
+
+    padding:35px;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:22px;
+
+    box-shadow:0 18px 45px rgba(13,71,161,.18);
+}
+
+/* ================= HEADER ================= */
+
+.header{
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:8px;
+}
+
+.header h1{
+
+    font-size:28px;
+
+    color:#0D3B66;
+
+    font-weight:700;
+}
+
+.header p{
+
+    font-size:16px;
+
+    color:#6b7280;
+
+    text-align:center;
+}
+
+/* ================= FORM ================= */
+
+.flexs1{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    align-items:flex-start;
+}
+
+.flexs1 label{
+
+    width:100%;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:#0D3B66;
+}
+
+/* ================= INPUT ================= */
+
+.flexs1 input{
+
+    width:100%;
+
+    padding:13px 15px;
+
+    border:1px solid #D6D6D6;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:.3s;
+}
+
+.flexs1 input:focus{
+
+    border-color:#1976D2;
+
+    box-shadow:0 0 8px rgba(25,118,210,.25);
+}
+
+/* ================= SELECT ================= */
+
+.flexs1 select{
+
+    width:100%;
+
+    padding:13px 15px;
+
+    border:1px solid #D6D6D6;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    background:white;
+
+    outline:none;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.flexs1 select:focus{
+
+    border-color:#1976D2;
+
+    box-shadow:0 0 8px rgba(25,118,210,.25);
+}
+
+/* ================= BUTTON ================= */
+
+.btn1{
+
+    width:100%;
+
+    margin-top:10px;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#1976D2;
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.btn1:hover{
+
+    background:#1565C0;
+
+    transform:translateY(-2px);
+}
+
+/* ================= PLACEHOLDER ================= */
+
+input::placeholder{
+
+    color:#9CA3AF;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:600px){
+
+    .in-box{
+
+        width:100%;
+
+        padding:25px;
+    }
+
+    .header h1{
+
+        font-size:24px;
+    }
+
+    .btn1{
+
+        font-size:16px;
+    }
+
+}
+
+.p1
+{
+    color: red;
+}
+
+.showlogin
+{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+
+    background: #28a745;
+    color: white;
+
+    padding: 12px 22px;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,.2);
+
+    animation: slideIn .4s ease;
+     z-index: 9999; 
+}
+
+@keyframes slideIn
+{
+    from
+    {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+
+    to
+    {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

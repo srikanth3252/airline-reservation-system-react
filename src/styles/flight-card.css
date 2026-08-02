@@ -1,0 +1,414 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+.FlightCard{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    margin:30px 0;
+}
+
+.FlightCard-box{
+
+    width:900px;
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:30px;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.15);
+
+    border-left:8px solid #0D6EFD;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+    transition:.3s;
+}
+
+.FlightCard-box:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 20px 45px rgba(0,0,0,.22);
+
+}
+
+.FlightCard-box>h1{
+
+    text-align:center;
+
+    color:#0D47A1;
+
+    font-size:34px;
+
+    letter-spacing:1px;
+
+}
+
+/*================ ROUTE ================*/
+
+.manage-route{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    background:#EAF4FF;
+
+}
+
+.manage-route h1{
+
+    color:#0D47A1;
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+.manage-route::before{
+
+    content:"🛫";
+
+    font-size:30px;
+
+}
+
+.manage-route::after{
+
+    content:"🛬";
+
+    font-size:30px;
+
+}
+
+/*================ DATE SECTION ================*/
+
+.manage-dates{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:20px;
+
+}
+
+.manage-dates div{
+
+    background:#F8FAFC;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    text-align:center;
+
+    box-shadow:0 5px 12px rgba(0,0,0,.08);
+
+}
+
+.manage-dates p{
+
+    color:#777;
+
+    font-size:15px;
+
+    margin-bottom:8px;
+
+}
+
+.manage-dates h3{
+
+    color:#0D47A1;
+
+    font-size:20px;
+
+}
+
+/*================ CLASS SECTION ================*/
+
+.manage-class{
+
+    background:#F5F9FF;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+.manage-class h1{
+
+    color:#1565C0;
+
+    font-size:26px;
+
+}
+
+.manage-class p{
+
+    font-size:18px;
+
+    color:#444;
+
+    line-height:1.6;
+
+}
+
+/*================ BUTTON ================*/
+
+.manage-class button{
+
+    width:180px;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#1976D2;
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.manage-class button:hover{
+
+    background:#0D47A1;
+
+    transform:scale(1.04);
+
+}
+
+/*================ MOBILE ================*/
+
+@media(max-width:850px){
+
+    .FlightCard-box{
+
+        width:95%;
+
+    }
+
+    .manage-route{
+
+        flex-direction:column;
+
+        gap:15px;
+
+    }
+
+    .manage-dates{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .manage-class button{
+
+        width:100%;
+
+    }
+
+}
+
+.manage-buttons
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+.manage-class .view_seats
+{
+   width:300px;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#1976D2;
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;   
+}
+
+/*================ REMAINING SEATS SECTION ================*/
+
+.remaining-seats{
+
+    margin-top:20px;
+
+    background:#F8FBFF;
+
+    border:2px solid #D6E9FF;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+.remaining-seats h2{
+
+    text-align:center;
+
+    color:#0D47A1;
+
+    font-size:28px;
+
+    margin-bottom:10px;
+
+}
+
+.remaining-seats>p{
+
+    text-align:center;
+
+    font-size:18px;
+
+    color:#444;
+
+    font-weight:600;
+
+}
+
+/*================ EACH CLASS ================*/
+
+.class-box{
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:15px 20px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    transition:.3s;
+
+}
+
+.class-box:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 18px rgba(0,0,0,.15);
+
+}
+
+.class-box h3{
+
+    color:#1565C0;
+
+    font-size:22px;
+
+}
+
+.class-box p{
+
+    font-size:17px;
+
+    color:#555;
+
+}
+
+/*================ SELECTED CLASS ================*/
+
+.selected-class{
+
+    border:3px solid #1976D2;
+
+    background:#EAF4FF;
+
+}
+
+/*================ HIDE BUTTON ================*/
+
+.hide-btn{
+
+    width:250px;
+
+    margin:auto;
+
+    margin-top:10px;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#1976D2;
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.hide-btn:hover{
+
+    background:#0D47A1;
+
+}

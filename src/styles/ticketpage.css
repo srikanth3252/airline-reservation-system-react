@@ -1,0 +1,256 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+.ticket-page{
+    min-height:100vh;
+    background:linear-gradient(135deg,#EAF4FF,#D6ECFF,#F7FBFF);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+
+.ticket{
+    width:900px;
+    background:white;
+    border-radius:18px;
+    box-shadow:0 12px 35px rgba(0,0,0,0.18);
+    padding:35px;
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.ticket-header{
+    text-align:center;
+}
+
+.ticket-header h1{
+    color:#0A5A97;
+    font-size:32px;
+}
+
+.ticket-header h2{
+    margin-top:10px;
+    color:#333;
+    font-size:28px;
+}
+
+.confirmed{
+    margin-top:15px;
+    color:green;
+    font-size:24px;
+}
+
+.ticket-info{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.ticket-info div{
+    background:#F4F9FF;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.ticket-info strong{
+    color:#0A5A97;
+}
+
+.ticket-info p{
+    margin-top:8px;
+    font-size:17px;
+}
+
+.journey{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.journey h2{
+    color:#0A5A97;
+    font-size:30px;
+}
+
+.journey h3{
+    margin-top:8px;
+}
+
+.arrow{
+    font-size:30px;
+    color:#0A5A97;
+}
+
+.flight-details{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.flight-details div{
+    background:#F4F9FF;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.flight-details strong{
+    color:#0A5A97;
+}
+
+.passenger-heading{
+    color:#0A5A97;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th{
+    background:#0A5A97;
+    color:white;
+    padding:12px;
+}
+
+table td{
+    border:1px solid #ddd;
+    padding:12px;
+    text-align:center;
+}
+
+table tr:nth-child(even){
+    background:#F8FBFF;
+}
+
+.contact{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.contact div{
+    width:48%;
+    background:#F4F9FF;
+    padding:18px;
+    border-radius:10px;
+}
+
+.contact strong{
+    color:#0A5A97;
+}
+
+.footer{
+    text-align:center;
+    margin-top:10px;
+}
+
+.footer h2{
+    color:green;
+    margin-bottom:10px;
+}
+
+.footer p{
+    color:#555;
+    font-size:18px;
+}
+
+.ticket-buttons{
+    display:flex;
+    justify-content:center;
+    margin-top:20px;
+}
+
+.ticket-buttons button{
+    padding:14px 30px;
+    background:#0A5A97;
+    width: 300px;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:18px;
+    transition:.3s;
+}
+
+.ticket-buttons button:hover{
+    background:#083d68;
+    transform:translateY(-2px);
+}
+
+hr{
+    border:none;
+    border-top:1px dashed #bbb;
+}
+
+@media(max-width:900px){
+
+    .ticket{
+        width:100%;
+    }
+
+    .ticket-info,
+    .flight-details{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .journey{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .contact{
+        flex-direction:column;
+    }
+
+    .contact div{
+        width:100%;
+    }
+}
+
+@media(max-width:600px){
+
+    .ticket-info,
+    .flight-details{
+        grid-template-columns:1fr;
+    }
+
+    table{
+        font-size:14px;
+    }
+
+    .ticket-header h1{
+        font-size:26px;
+    }
+
+    .ticket-header h2{
+        font-size:22px;
+    }
+
+    .journey h2{
+        font-size:24px;
+    }
+}
+
+.success-message{
+    margin-top:15px;
+    color:#0a8f3d;
+    font-weight:600;
+    text-align:center;
+}
+
+.ticket-buttons
+{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}

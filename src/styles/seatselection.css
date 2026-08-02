@@ -1,0 +1,365 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+.seatselection{
+    min-height:100vh;
+    background:linear-gradient(135deg,#EAF4FF,#D6ECFF,#F7FBFF);
+    padding:40px 60px;
+
+    display: flex;
+    flex-direction: column;
+    gap:50px;
+}
+
+.h12{
+    text-align:center;
+    font-size:34px;
+    color:#1565C0;
+    margin-bottom:40px;
+}
+
+.flex-row{
+    display:flex;
+    justify-content:space-around;
+    align-items:flex-start;
+    gap:40px;
+}
+
+/* Flight Details Card */
+
+.flightdetails{
+    width:420px;
+    background:#fff;
+    border-radius:18px;
+    padding:30px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    box-shadow:0 15px 35px rgba(0,0,0,.12);
+}
+
+.flightdetails h2{
+    text-align:center;
+    color:#1565C0;
+    margin-bottom:10px;
+}
+
+.flightdetails p{
+    font-size:17px;
+    color:#444;
+}
+
+/* Route */
+
+.route{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:35px;
+    margin:10px 0;
+}
+
+.route h3{
+    color:#0D47A1;
+    font-size:24px;
+}
+
+.legend
+{
+    width:420px;
+    background:#fff;
+    box-shadow:0 15px 35px rgba(0,0,0,.12);
+
+    border-radius:18px;
+    padding:30px;
+
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+
+}
+
+.legend-items
+{
+   display: flex;
+   flex-direction: row;
+   gap:18px;
+   align-items: center;
+}
+
+.box
+{
+    width:20px;
+    height: 20px;
+    border-radius:6px;
+}
+.Available
+{
+    background:#ffffff;
+    border:2px solid #999;
+}
+.Selected
+{
+    background:#2196F3;
+}
+.Booked
+{
+     background:#4CAF50;
+}
+
+.economy-grid{
+    display:grid;
+    grid-template-columns:repeat(6,40px);
+    gap:10px;
+    justify-content:center;
+}
+
+.business-grid{
+    display:grid;
+    grid-template-columns:repeat(4,40px);
+    gap:10px;
+    justify-content:center;
+}
+
+.premium-grid{
+    display:grid;
+    grid-template-columns:repeat(4,40px);
+    gap:10px;
+    justify-content:center;
+}
+
+.firstclass-grid{
+    display:grid;
+    grid-template-columns:repeat(2,40px);
+    gap:10px;
+    justify-content:center;
+}
+
+.seat-btn{
+    width:42px;
+    height:42px;
+    border:1px solid #c5c5c5;
+    border-radius:8px;
+    background:#fff;
+    color:#222;
+    cursor:pointer;
+    font-weight:600;
+    transition:all .25s ease;
+}
+
+.seat-btn:hover{
+    transform:scale(1.08);
+    box-shadow:0 5px 12px rgba(0,0,0,.15);
+}
+
+.flightdetails,
+.legend,
+.selected-seat{
+    transition:transform .3s ease, box-shadow .3s ease;
+}
+
+.flightdetails:hover,
+.legend:hover,
+.selected-seat:hover{
+    transform:translateY(-5px);
+    box-shadow:0 18px 40px rgba(0,0,0,.18);
+}
+
+.cockpit,
+.tail{
+    width:240px;
+    height:65px;
+    background:#eceff1;
+    border:2px solid #b0bec5;
+    border-radius:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:18px;
+    font-weight:700;
+    color:#37474f;
+}
+
+.heading{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+}
+
+.heading h1{
+    color:#1565C0;
+    font-size:32px;
+}
+
+.heading p{
+    width:75%;
+    text-align:center;
+    color:#555;
+    line-height:1.6;
+}
+
+.seat-popup{
+    position:fixed;
+    top:20px;
+    right:20px;
+    width:180px;
+    padding:15px;
+    border-radius:12px;
+    background:#fff;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    border-left:5px solid #1565C0;
+    z-index:1000;
+}
+
+.seat-popup h4{
+    color:#1565C0;
+    margin-bottom:8px;
+}
+
+.selected-seat{
+    width:650px;
+    margin:0 auto 80px;
+    border-radius:18px;
+    padding:30px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.selected-seat h1{
+    text-align:center;
+    color:#1565C0;
+}
+
+.selected-seat-button{
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    margin-top:15px;
+}
+
+.selected-seat button{
+    border:none;
+    padding:12px 35px;
+    border-radius:10px;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.selected-seat button:hover{
+    transform:translateY(-2px);
+}
+
+.b1{
+    background:#e53935;
+}
+
+.b2{
+    background:#43a047;
+}
+
+.legend-items span{
+    font-size:17px;
+    color:#444;
+}
+
+.route{
+    margin:18px 0;
+}
+
+.flightdetails p{
+    line-height:1.6;
+}
+
+.form-flex
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.grid-flex
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.popup-overlay
+{
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,0.35);
+
+    backdrop-filter: blur(4px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.passengerexceedpop
+{
+    width: 420px;
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+
+    text-align: center;
+}
+
+.passengerexceedpop h1
+{
+    color: #d32f2f;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.passengerexceedpop button
+{
+    padding: 12px 35px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #1976d2;
+    color: white;
+
+    font-size: 17px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.passengerexceedpop button:hover
+{
+    background: #1257a5;
+    transform: scale(1.05);
+}

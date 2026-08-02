@@ -1,0 +1,82 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+.homepage{
+    min-height:100vh;
+    background-image:linear-gradient(
+        rgba(0,0,0,.45),
+        rgba(0,0,0,.45)
+    ),
+    url("https://i.pinimg.com/736x/a0/e0/bf/a0e0bf12c044e98d14cd1084d399d3b4.jpg");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+}
+
+.homepage .flex2{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:25px 60px;
+}
+
+.homepage .flex1{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+
+    width:65%;
+    margin-left:70px;
+    margin-top:110px;
+
+    gap:22px;
+}
+
+.homepage h1{
+    color:white;
+    font-size:3.3rem;
+
+    /* slightly softer */
+    text-shadow:2px 2px 6px rgba(0,0,0,.7);
+}
+
+.homepage h2{
+    color:white;
+    font-size:1.6rem;
+    line-height:1.6;
+    font-weight:400;
+}
+
+.homepage p{
+    color:white;
+    font-size:1.1rem;
+
+    /* remove extra gap */
+    margin-top:0;
+}
+
+.homepage button{
+    padding:12px 36px;
+    border:none;
+    border-radius:25px;
+
+    background:#0d6efd;
+    color:white;
+
+    font-size:17px;
+    font-weight:600;
+
+    cursor:pointer;
+    transition:.3s;
+}
+
+.homepage button:hover{
+    background:#084fc7;
+    transform:translateY(-2px);
+}

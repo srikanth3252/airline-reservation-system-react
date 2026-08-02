@@ -1,0 +1,285 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+.payment{
+    min-height:100vh;
+    background:linear-gradient(135deg,#EAF4FF,#D6ECFF,#F7FBFF);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:30px;
+    padding:50px 20px;
+}
+
+.payment-title{
+    font-size:40px;
+    color:#0A5A97;
+    font-weight:700;
+}
+
+.payment-subtitle{
+    font-size:18px;
+    color:#666;
+    text-align:center;
+    margin-top:-15px;
+}
+
+.booking-summary,
+.payment-method,
+.payment-box{
+    width:100%;
+    max-width:760px;
+    background:white;
+    border-radius:16px;
+    padding:30px;
+    box-shadow:0 12px 30px rgba(0,0,0,.12);
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.booking-summary h2,
+.payment-method h2,
+.payment-box h2{
+    color:#0A5A97;
+    text-align:center;
+    font-size:28px;
+}
+
+.booking-summary p{
+    font-size:17px;
+    color:#333;
+}
+
+.booking-summary h3{
+    color:#0A5A97;
+    text-align:right;
+    font-size:24px;
+    margin-top:10px;
+}
+
+.payment-method{
+    gap:15px;
+}
+
+.radio-flex{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border:1px solid #ddd;
+    padding:15px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.radio-flex:hover{
+    background:#F5FAFF;
+    border-color:#0A5A97;
+}
+
+.radio-flex label{
+    font-size:17px;
+    cursor:pointer;
+    color:#333;
+}
+
+.radio-flex input{
+    width:18px;
+    height:18px;
+}
+
+.credit-flex{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.credit-flex label{
+    font-size:17px;
+    font-weight:600;
+    color:#0A5A97;
+}
+
+.credit-flex p{
+    font-size:14px;
+    color:#666;
+}
+
+.credit-flex input{
+    width:100%;
+    height:48px;
+    padding:0 15px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    outline:none;
+    font-size:16px;
+    transition:.3s;
+}
+
+.credit-flex input:focus{
+    border-color:#0A5A97;
+    box-shadow:0 0 8px rgba(10,90,151,.25);
+}
+
+.credit-flex input::placeholder{
+    color:#999;
+}
+
+.payment-box h3{
+    color:#0A5A97;
+    text-align:right;
+    font-size:24px;
+}
+
+.pay-btn{
+    width:100%;
+    height:52px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+    background:#0A5A97;
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.pay-btn:hover{
+    background:#084876;
+    transform:translateY(-2px);
+}
+
+.submit-btn{
+    width:180px;
+    height:45px;
+    border:none;
+    border-radius:8px;
+    background:#28A745;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.submit-btn:hover{
+    background:#218838;
+}
+
+@media(max-width:768px){
+
+    .payment{
+        padding:25px 12px;
+    }
+
+    .payment-title{
+        font-size:30px;
+        text-align:center;
+    }
+
+    .payment-subtitle{
+        font-size:15px;
+        text-align:center;
+    }
+
+    .booking-summary,
+    .payment-method,
+    .payment-box{
+        padding:20px;
+    }
+
+    .booking-summary h2,
+    .payment-method h2,
+    .payment-box h2{
+        font-size:23px;
+    }
+
+    .booking-summary h3,
+    .payment-box h3{
+        font-size:20px;
+    }
+
+    .submit-btn,
+    .pay-btn{
+        width:100%;
+    }
+}
+
+.para
+{
+    color: red;
+}
+
+.payment-popup{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.55);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+}
+
+.payment-popup-box{
+
+    width:420px;
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:35px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    gap:20px;
+
+    text-align:center;
+}
+
+.payment-popup-box h2{
+
+    color:#0a5a97;
+}
+
+.payment-popup-box p{
+
+    color:#666;
+}
+
+.loader{
+
+    width:55px;
+    height:55px;
+
+    border:6px solid #ddd;
+    border-top:6px solid #0a5a97;
+
+    border-radius:50%;
+
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+}
