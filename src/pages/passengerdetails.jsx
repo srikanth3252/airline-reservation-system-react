@@ -40,7 +40,7 @@ function Passenger_details()
 
             try {
 
-                const res = await fetch("http://airline-backend-zdo5.onrender.com:814/get_email", {
+                const res = await fetch("https://airline-backend-zdo5.onrender.com/get_email", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

@@ -35,7 +35,7 @@ function Profile()
     async function getProfile() 
     {
         try {
-            let res = await fetch("http://airline-backend-zdo5.onrender.com:814/get_profile_data", {
+            let res = await fetch("https://airline-backend-zdo5.onrender.com/get_profile_data", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -167,7 +167,7 @@ function Profile()
 
         try
         {
-            let res=await fetch("http://airline-backend-zdo5.onrender.com:814/store_profile_data",{
+            let res=await fetch("https://airline-backend-zdo5.onrender.com/store_profile_data",{
                  method:"POST",
                  headers:
                  {

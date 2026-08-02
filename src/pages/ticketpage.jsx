@@ -34,7 +34,7 @@ function Ticket() {
 
             try {
 
-                const res = await fetch("http://airline-backend-zdo5.onrender.com:814/get_flightsdata", {
+                const res = await fetch("https://airline-backend-zdo5.onrender.com/get_flightsdata", {
 
                     method: "POST",
 
@@ -111,7 +111,7 @@ function Ticket() {
 
         try {
 
-            const res = await fetch("http://airline-backend-zdo5.onrender.com:814/send_ticket", {
+            const res = await fetch("https://airline-backend-zdo5.onrender.com/send_ticket", {
 
                 method: "POST",
 

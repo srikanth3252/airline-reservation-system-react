@@ -47,7 +47,7 @@ function Payment() {
         async function sendotp() {
             const email = localStorage.getItem("email");
 
-            let res = await fetch("http://airline-backend-zdo5.onrender.com:814/send-otp", {
+            let res = await fetch("https://airline-backend-zdo5.onrender.com/send-otp", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -169,7 +169,7 @@ setTimeout(() => {
         const passengers =JSON.parse(localStorage.getItem("details")) || [];
         async function store_data()
         {
-             let res=await fetch("http://airline-backend-zdo5.onrender.com:814/store_data",{
+             let res=await fetch("https://airline-backend-zdo5.onrender.com/store_data",{
  
                     method:"POST",
                     headers:

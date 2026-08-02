@@ -25,7 +25,7 @@ useEffect(() => {
 
     async function getBookedSeats() {
         try {
-            let res = await fetch("http://airline-backend-zdo5.onrender.com:814/get_bookedseats",{
+            let res = await fetch("https://airline-backend-zdo5.onrender.com/get_bookedseats",{
                     
                 method:"POST",
                 headers:
@@ -61,7 +61,7 @@ useEffect(() => {
 
         async function get_seat_status() 
         {
-            let res=await fetch("http://airline-backend-zdo5.onrender.com:814/get_seat_status",{
+            let res=await fetch("https://airline-backend-zdo5.onrender.com/get_seat_status",{
 
                 method:"post",
                 headers:

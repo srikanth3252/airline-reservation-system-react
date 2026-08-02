@@ -74,7 +74,7 @@ function Search()
             return ;
        async function get_flights()
        {
-          let res=await fetch("http://airline-backend-zdo5.onrender.com:814/get_flights",{
+          let res=await fetch("https://airline-backend-zdo5.onrender.com/get_flights",{
 
                   method:"POST",
                   headers:
