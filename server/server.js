@@ -256,26 +256,22 @@ app.post("/get_bookedseats",(req,res)=>{
 
     const { travelClass } = req.body;
 
-    const query = `
-        SELECT seat_no
-        FROM bookings
-        WHERE travel_class=? AND flight_id=?
-    `;
+    console.log("Travel Class:", travelClass);
+
+    const query = "SELECT seat_no FROM bookings WHERE travel_class=?";
 
     db.query(query,[travelClass],(error,result)=>{
 
         if(error)
         {
+            console.log(error);
             return res.status(500).json({
                 message:error.message
             });
         }
 
-        const seats = result.map(row => row.seat_no);
-
         return res.json({
-            message:"Booked seats received",
-            seats:seats
+            seats: result.map(row => row.seat_no)
         });
 
     });
