@@ -37,9 +37,9 @@ useEffect(() => {
 
             let data = await res.json();
 
-            console.log(data.message);
+            console.log("Booked Seats API Response:", data);
 
-            setbookedseats(data.seats);
+            setbookedseats(data.seats || []);
             
         }
         catch (err) 
