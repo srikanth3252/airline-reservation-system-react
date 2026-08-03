@@ -76,7 +76,8 @@ app.post("/send-otp", (req, res) => {
     transport.sendMail(mailOptions, (err, info) => {
         if (err) 
         {
-            return res.json({message: "Failed to send OTP"});
+            return res.json({message:err.message});
+            console.log(err);
         }
 
         res.json({ message: "OTP sent successfully",otp:otp});
