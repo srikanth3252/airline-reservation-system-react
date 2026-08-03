@@ -250,6 +250,38 @@ app.post("/get_flights",(req,res)=>{
     });
 });
 
+// get booked seats details
+
+app.post("/get_bookedseats",(req,res)=>{
+
+    const { travelClass } = req.body;
+
+    const query = `
+        SELECT seat_no
+        FROM bookings
+        WHERE travel_class=? AND flight_id=?
+    `;
+
+    db.query(query,[travelClass],(error,result)=>{
+
+        if(error)
+        {
+            return res.status(500).json({
+                message:error.message
+            });
+        }
+
+        const seats = result.map(row => row.seat_no);
+
+        return res.json({
+            message:"Booked seats received",
+            seats:seats
+        });
+
+    });
+
+});
+
 // check seat status
 app.post("/get_seat_status",(req,res)=>{
 
