@@ -55,35 +55,45 @@ function Loginpage()
         navigate("/reset_password");
      }
     function handleProceed()
+{
+    if(popupAction === "otp-send")
     {
-        if(popupAction==="otp-send")
-        {
-             setShowPopup(false);
-        }
-        else if(popupAction==="otp-verified")
-        {
-               setShowPopup(false);
-               setverifyotp(true);
-        }
-        else if(popupAction=="email-exists")
-        {
-            setShowPopup(false);
-        }
-        else if(popupAction==="Invalid OTP")
-        {
-            setShowPopup(false);
-            setverifyotp(false);
-        }
-        else if(popupAction==='Registration-Successful')
-        {
-            setShowPopup(false);
-            navigate("/loginpage");
-        }
-        else if(popupAction==="login-failed")
-        {
-             setShowPopup(false);
-        }
+        setShowPopup(false);
     }
+
+    else if(popupAction === "otp-verified")
+    {
+        setShowPopup(false);
+        setOtpVerified(true);
+    }
+
+    else if(popupAction === "email-exists")
+    {
+        setShowPopup(false);
+    }
+
+    else if(popupAction === "Invalid OTP")
+    {
+        setShowPopup(false);
+        setOtpVerified(false);
+    }
+
+    else if(popupAction === "otp-error")
+    {
+        setShowPopup(false);
+    }
+
+    else if(popupAction === "Registration-Successful")
+    {
+        setShowPopup(false);
+        navigate("/loginpage");
+    }
+
+    else if(popupAction === "login-failed")
+    {
+        setShowPopup(false);
+    }
+}
 
     // function handle login page submit
     async function handlesubmit(e)
@@ -157,61 +167,91 @@ function Loginpage()
     }
 
     // function handle sendotp
-    async  function handlesendotp()
+    async function handlesendotp()
+{
+    if(email.trim() === "")
     {
-         async function sendotp()
-         {
-             if(email.trim()=="")
-             {
-                setmissingemail(true);
-                return;
-             }
-             setmissingemail(false);
-              let res=await fetch("https://airline-backend-zdo5.onrender.com/send-otp",{
-            
-                  method:"POST",
-                  headers:
-                  {
-                    "Content-Type":"application/json"
-                  },
-                  body:JSON.stringify({email:email})
-              });
+        setmissingemail(true);
+        return;
+    }
 
-              let data=await res.json();
-              return data;
-         }
+    setmissingemail(false);
 
-         try
-         {
-             let res=await sendotp();
-             console.log(res.message);
-             if(!res.success)
-             {
-                console.log(res.message);
+    try
+    {
+        const res = await fetch(
+            "https://airline-backend-zdo5.onrender.com/send-otp",
+            {
+                method: "POST",
+                headers:
+                {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        console.log(data);
+
+        if(data.success)
+        {
+            setPopupTitle("OTP Sent Successfully");
+
+            setPopupMessage(
+                "An OTP has been sent to your email address. Please check your inbox and enter the OTP below."
+            );
+
+            setPopupType("info");
+            setPopupAction("otp-send");
+            setShowPopup(true);
+        }
+        else
+        {
+            if(data.message === "Email already exists")
+            {
                 setPopupTitle("Email Already Registered");
+
                 setPopupMessage(
                     "An account with this email address already exists. Please use a different email address or sign in with your existing account."
                 );
+
                 setPopupType("error");
                 setPopupAction("email-exists");
-                setShowPopup(true);
-                return;
-             }
-             else{
-             setPopupTitle("OTP Sent Successfully");
-             setPopupMessage(
-                    "An OTP has been sent to your registered email address. Please enter the OTP below to continue with your account verification."
-              );
-            setPopupType("info");
-            setPopupAction("otp-send")
+            }
+            else
+            {
+                setPopupTitle("OTP Sending Failed");
+
+                setPopupMessage(
+                    data.message || "Unable to send OTP. Please try again."
+                );
+
+                setPopupType("error");
+                setPopupAction("otp-error");
+            }
+
             setShowPopup(true);
-           }
-         }
-         catch(err)
-         {
-            console.log(err);
-         }
+        }
     }
+    catch(err)
+    {
+        console.log(err);
+
+        setPopupTitle("Server Error");
+
+        setPopupMessage(
+            "Unable to connect to the server. Please try again later."
+        );
+
+        setPopupType("error");
+        setPopupAction("otp-error");
+        setShowPopup(true);
+    }
+}
     
     // function to handle verify otp
     async function handleverifyotp()
