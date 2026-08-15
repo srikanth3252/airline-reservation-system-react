@@ -23,15 +23,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// transport object;
-const nodemailer = require("nodemailer");
-const transport = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: "srikanthreddybapatu04@gmail.com",
-        pass: "qkkm flky fota fopx"
-    }
-});
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function generate_otp()
 {
@@ -41,49 +35,114 @@ function generate_otp()
 //route to send otp
 app.post("/send-otp", (req, res) => {
 
-    const {email}=req.body
+    const { email } = req.body;
 
     const query = "SELECT * FROM users WHERE email = ?";
-    db.query(query, [email], (err, result) => {
+
+    db.query(query, [email], async (err, result) => {
+
         if (err) {
-            return res.json({
+
+            console.log(err);
+
+            return res.status(500).json({
                 success: false,
                 message: "Database error"
             });
         }
+
         // Email already exists
         if (result.length > 0) {
-            return res.json({
+
+            return res.status(400).json({
                 success: false,
                 message: "Email already exists"
             });
         }
 
-    const otp=generate_otp();
-    store[email]=otp;
-    const mailOptions = {
-        from: "srikanthreddybapatu04@gmail.com",
-        to: email,
-        subject: "OTP Verification for Account Registration",
-        text: `Welcome to Vinayaka SkyWings Airlines!
-        To create your account, please verify your email address using the OTP below.
-        Your OTP is: ${otp}
-        This OTP is valid for 5 minutes.
-        For your security, please do not share this OTP with anyone.
-        Thank you for choosing Vinayaka SkyWings Airlines.
-        Have a pleasant journey!`
-    };
-    transport.sendMail(mailOptions, (err, info) => {
-        if (err) 
-        {
-            return res.json({message:err.message});
-            console.log(err);
+        const otp = generate_otp();
+
+        // Store OTP
+        store[email] = otp;
+
+        console.log("Generated OTP:", otp);
+
+        try {
+
+            const { data, error } = await resend.emails.send({
+
+                from: "Vinayaka SkyWings <onboarding@resend.dev>",
+
+                to: [email],
+
+                subject: "OTP Verification for Account Registration",
+
+                html: `
+                    <h2>✈ Vinayaka SkyWings Airlines</h2>
+
+                    <p>
+                        Welcome to Vinayaka SkyWings Airlines!
+                    </p>
+
+                    <p>
+                        To create your account, please verify your email address.
+                    </p>
+
+                    <h1>${otp}</h1>
+
+                    <p>
+                        This OTP is valid for 5 minutes.
+                    </p>
+
+                    <p>
+                        Please do not share this OTP with anyone.
+                    </p>
+
+                    <p>
+                        Thank you for choosing Vinayaka SkyWings Airlines.
+                    </p>
+
+                    <p>
+                        Have a pleasant journey!
+                    </p>
+                `
+            });
+
+            if (error) {
+
+                console.log("Resend error:", error);
+
+                delete store[email];
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Failed to send OTP"
+                });
+            }
+
+            console.log("Resend response:", data);
+
+            return res.status(200).json({
+                success: true,
+                message: "OTP sent successfully"
+            });
+
+        }
+        catch (error) {
+
+            console.log("Resend exception:", error);
+
+            delete store[email];
+
+            return res.status(500).json({
+                success: false,
+                message: "Failed to send OTP"
+            });
         }
 
-        res.json({ message: "OTP sent successfully",otp:otp});
-     });
-})
-});  
+    });
+
+});
 
 //route to verify otp
 
@@ -552,55 +611,109 @@ app.post("/store_profile_data", (req, res) => {
 
 });
 
-app.post("/send_ticket",
-upload.single("ticket"),
-async(req,res)=>{
-     
-    try
-    {
-        const email = req.body.email;
+app.post(
+    "/send_ticket",
+    upload.single("ticket"),
+    async (req, res) => {
 
-        await transport.sendMail({
-    from: "srikanthreddybapatu04@gmail.com",
-    to: email,
-    subject: "Your Airline E-Ticket",
-    html: `
-        <h2>Booking Confirmed ✅</h2>
+        try {
 
-        <p>Dear Passenger,</p>
+            const email = req.body.email;
 
-        <p>Thank you for choosing our Airline Reservation System.</p>
+            if (!email) {
 
-        <p>Your booking has been confirmed successfully.</p>
+                return res.json({
+                    success: false,
+                    message: "Email is required"
+                });
 
-        <p>Please find your e-ticket attached with this email.</p>
+            }
 
-        <br>
+            if (!req.file) {
 
-        <p>Have a safe and pleasant journey! ✈</p>
-    `,
-    attachments: [
-        {
-            filename: "E-Ticket.pdf",
-            content: req.file.buffer
+                return res.json({
+                    success: false,
+                    message: "Ticket PDF is missing"
+                });
+
+            }
+
+            const { data, error } = await resend.emails.send({
+
+                from: "Vinayaka SkyWings <onboarding@resend.dev>",
+
+                to: [email],
+
+                subject: "Your Airline E-Ticket",
+
+                html: `
+                    <h2>Booking Confirmed ✅</h2>
+
+                    <p>Dear Passenger,</p>
+
+                    <p>
+                        Thank you for choosing our
+                        Airline Reservation System.
+                    </p>
+
+                    <p>
+                        Your booking has been confirmed successfully.
+                    </p>
+
+                    <p>
+                        Please find your e-ticket attached
+                        with this email.
+                    </p>
+
+                    <br>
+
+                    <p>
+                        Have a safe and pleasant journey! ✈
+                    </p>
+                `,
+
+                attachments: [
+                    {
+                        filename: "E-Ticket.pdf",
+                        content: req.file.buffer
+                    }
+                ]
+
+            });
+
+            if (error) {
+
+                console.log("Resend error:", error);
+
+                return res.status(500).json({
+                    success: false,
+                    message: error.message
+                });
+
+            }
+
+            console.log("Ticket email sent:", data);
+
+            return res.json({
+                success: true,
+                message: "Ticket sent successfully"
+            });
+
         }
-    ]
-});
+        catch (err) {
 
-        return res.json({
-            success:true,
-            message:"PDF received successfully"
-        });
-    }
-    catch(err)
-    {
-        return res.json({
-            success:false,
-            message:err.message
-        });
-    }
+            console.log("Send ticket error:", err);
 
-});
+            return res.status(500).json({
+                success: false,
+                message: err.message
+            });
+
+        }
+
+    }
+);
+
 
 app.post("/get_profile_data", (req, res) => {
 
