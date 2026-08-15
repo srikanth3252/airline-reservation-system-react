@@ -11,138 +11,208 @@ const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage
 });
-const store={};
 
-// Port number
+const store = {};
+
+// Port
 const port = process.env.PORT || 814;
 
 // Create server
 const app = express();
 
-// Middlewares
+// Middleware
 app.use(express.json());
 app.use(cors());
 
-const { Resend } = require("resend");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// =====================================================
+// BREVO
+// =====================================================
 
-function generate_otp()
-{
-    return   Math.floor(100000 + Math.random() * 900000);
+const { BrevoClient } = require("@getbrevo/brevo");
+
+const brevo = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY
+});
+
+
+function generate_otp() {
+
+    return Math.floor(100000 + Math.random() * 900000);
+
 }
 
-//route to send otp
+
 app.post("/send-otp", (req, res) => {
 
     const { email } = req.body;
+
+    if (!email || email.trim() === "") {
+
+        return res.status(400).json({
+            success: false,
+            message: "Email is required"
+        });
+
+    }
 
     const query = "SELECT * FROM users WHERE email = ?";
 
     db.query(query, [email], async (err, result) => {
 
+        // Database error
         if (err) {
 
-            console.log(err);
+            console.log("Database error:", err);
 
             return res.status(500).json({
                 success: false,
                 message: "Database error"
             });
+
         }
 
-        // Email already exists
+
+        // =================================================
+        // EMAIL ALREADY EXISTS
+        // =================================================
+
         if (result.length > 0) {
 
             return res.status(400).json({
                 success: false,
                 message: "Email already exists"
             });
+
         }
 
         const otp = generate_otp();
 
-        // Store OTP
         store[email] = otp;
 
         console.log("Generated OTP:", otp);
 
+
+        // =================================================
+        // SEND EMAIL USING BREVO
+        // =================================================
+
         try {
 
-            const { data, error } = await resend.emails.send({
+            const result = await brevo.transactionalEmails.sendTransacEmail({
 
-                from: "Vinayaka SkyWings <onboarding@resend.dev>",
+                sender: {
+                    name: "Vinayaka SkyWings Airlines",
+                    email: process.env.BREVO_SENDER_EMAIL
+                },
 
-                to: [email],
+                to: [
+                    {
+                        email: email
+                    }
+                ],
 
-                subject: "OTP Verification for Account Registration",
+                subject: "OTP Verification - Vinayaka SkyWings Airlines",
 
-                html: `
-                    <h2>✈ Vinayaka SkyWings Airlines</h2>
+                htmlContent: `
 
-                    <p>
-                        Welcome to Vinayaka SkyWings Airlines!
-                    </p>
+                    <div style="
+                        font-family: Arial;
+                        max-width: 600px;
+                        margin: auto;
+                        padding: 20px;
+                        border: 1px solid #ddd;
+                        border-radius: 10px;
+                    ">
 
-                    <p>
-                        To create your account, please verify your email address.
-                    </p>
+                        <h2>
+                            ✈ Vinayaka SkyWings Airlines
+                        </h2>
 
-                    <h1>${otp}</h1>
+                        <p>
+                            Welcome to Vinayaka SkyWings Airlines!
+                        </p>
 
-                    <p>
-                        This OTP is valid for 5 minutes.
-                    </p>
+                        <p>
+                            Please use the OTP below to verify your
+                            email address.
+                        </p>
 
-                    <p>
-                        Please do not share this OTP with anyone.
-                    </p>
+                        <h1 style="
+                            letter-spacing: 8px;
+                            text-align: center;
+                        ">
+                            ${otp}
+                        </h1>
 
-                    <p>
-                        Thank you for choosing Vinayaka SkyWings Airlines.
-                    </p>
+                        <p>
+                            This OTP is valid for 5 minutes.
+                        </p>
 
-                    <p>
-                        Have a pleasant journey!
-                    </p>
+                        <p>
+                            Please do not share this OTP with anyone.
+                        </p>
+
+                        <p>
+                            Thank you for choosing
+                            Vinayaka SkyWings Airlines.
+                        </p>
+
+                        <p>
+                            Have a safe and pleasant journey! ✈
+                        </p>
+
+                    </div>
+
+                `,
+
+                textContent: `
+                    Vinayaka SkyWings Airlines
+
+                    Your OTP is: ${otp}
+
+                    This OTP is valid for 5 minutes.
+
+                    Please do not share this OTP with anyone.
                 `
+
             });
 
-            if (error) {
 
-                console.log("Resend error:", error);
+            console.log("Brevo response:", result);
 
-                delete store[email];
-
-                return res.status(500).json({
-                    success: false,
-                    message: "Failed to send OTP"
-                });
-            }
-
-            console.log("Resend response:", data);
 
             return res.status(200).json({
+
                 success: true,
+
                 message: "OTP sent successfully"
+
             });
+
 
         }
         catch (error) {
 
-            console.log("Resend exception:", error);
+            console.log("Brevo error:", error);
 
+            // Remove OTP if email failed
             delete store[email];
 
             return res.status(500).json({
+
                 success: false,
+
                 message: "Failed to send OTP"
+
             });
+
         }
 
     });
 
 });
+
 
 //route to verify otp
 
@@ -622,7 +692,7 @@ app.post(
 
             if (!email) {
 
-                return res.json({
+                return res.status(400).json({
                     success: false,
                     message: "Email is required"
                 });
@@ -631,82 +701,127 @@ app.post(
 
             if (!req.file) {
 
-                return res.json({
+                return res.status(400).json({
                     success: false,
                     message: "Ticket PDF is missing"
                 });
 
             }
 
-            const { data, error } = await resend.emails.send({
 
-                from: "Vinayaka SkyWings <onboarding@resend.dev>",
+            // Send email using Brevo
+            const result =
+                await brevo.transactionalEmails.sendTransacEmail({
 
-                to: [email],
+                    sender: {
+                        name: "Vinayaka SkyWings Airlines",
+                        email: process.env.BREVO_SENDER_EMAIL
+                    },
 
-                subject: "Your Airline E-Ticket",
+                    to: [
+                        {
+                            email: email
+                        }
+                    ],
 
-                html: `
-                    <h2>Booking Confirmed ✅</h2>
+                    subject: "Your Airline E-Ticket",
 
-                    <p>Dear Passenger,</p>
+                    htmlContent: `
 
-                    <p>
+                        <div style="
+                            font-family: Arial;
+                            max-width: 600px;
+                            margin: auto;
+                            padding: 20px;
+                        ">
+
+                            <h2>
+                                ✈ Vinayaka SkyWings Airlines
+                            </h2>
+
+                            <h2>
+                                Booking Confirmed ✅
+                            </h2>
+
+                            <p>
+                                Dear Passenger,
+                            </p>
+
+                            <p>
+                                Thank you for choosing our
+                                Airline Reservation System.
+                            </p>
+
+                            <p>
+                                Your booking has been confirmed
+                                successfully.
+                            </p>
+
+                            <p>
+                                Please find your e-ticket
+                                attached with this email.
+                            </p>
+
+                            <br>
+
+                            <p>
+                                Have a safe and pleasant journey! ✈
+                            </p>
+
+                        </div>
+
+                    `,
+
+                    textContent: `
+                        Vinayaka SkyWings Airlines
+
+                        Booking Confirmed.
+
+                        Dear Passenger,
+
                         Thank you for choosing our
                         Airline Reservation System.
-                    </p>
 
-                    <p>
                         Your booking has been confirmed successfully.
-                    </p>
 
-                    <p>
-                        Please find your e-ticket attached
-                        with this email.
-                    </p>
+                        Please find your e-ticket attached.
 
-                    <br>
+                        Have a safe and pleasant journey!
+                    `,
 
-                    <p>
-                        Have a safe and pleasant journey! ✈
-                    </p>
-                `,
+                    attachment: [
+                        {
+                            name: "E-Ticket.pdf",
+                            content: req.file.buffer.toString("base64")
+                        }
+                    ]
 
-                attachments: [
-                    {
-                        filename: "E-Ticket.pdf",
-                        content: req.file.buffer
-                    }
-                ]
-
-            });
-
-            if (error) {
-
-                console.log("Resend error:", error);
-
-                return res.status(500).json({
-                    success: false,
-                    message: error.message
                 });
 
-            }
 
-            console.log("Ticket email sent:", data);
+            console.log("Ticket email sent:", result);
 
-            return res.json({
+
+            return res.status(200).json({
+
                 success: true,
+
                 message: "Ticket sent successfully"
+
             });
 
         }
+
         catch (err) {
 
             console.log("Send ticket error:", err);
 
             return res.status(500).json({
+
                 success: false,
-                message: err.message
+
+                message: "Failed to send ticket"
+
             });
 
         }
