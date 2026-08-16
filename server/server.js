@@ -513,7 +513,7 @@ app.post("/comparepassword", async (req, res) => {
         );
 
         if (samePassword) {
-            return res.status(400).json({
+            return res.status(200).json({
                 message: "New password cannot be the same as your previous password.",
                 same:true
             });

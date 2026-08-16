@@ -152,81 +152,98 @@ function Reset_password()
          }
     }
 
-    async function handlesetuppassword()
-    {
+    async function handlesetuppassword() {
 
-        if(password==="")
-        {
-            setmissingpassword(true);
-            return;
-        }
-        else
-        {
-            setmissingpassword(false);
-        }
-
-        if(confirmpassword==="")
-        {
-            setmissingrepassword(true);
-            return;
-        }
-        else
-        {
-            setmissingrepassword(false);
-        }
-
-        let result = await comparepassword();
-       
-        async function comparepassword()
-        {
-            try
-            {
-                let res=await fetch("https://airline-backend-zdo5.onrender.com/comparepassword",{
-                  method:"POST",
-                  headers:
-                  {
-                    "Content-Type":"application/json"
-                  },
-                  body:JSON.stringify({email:email,
-                    password:password
-                  })
-                 });
-
-                let data=await res.json();
-                return data.same;
-            }
-            catch(err)
-            {
-                console.log(err.message);
-            }
-        }
-
-        if(result==true)
-        {
-            setsamepassword(true);
-        }
-        else
-        {
-             setsamepassword(false);
-        }
-        if(password!=confirmpassword)
-        {
-            setpasswordnotmatched(true);
-        }
-        else
-        {
-            setpasswordnotmatched(false);
-        }
-        setPopupTitle("Password Updated Successfully");
-        setPopupMessage("Your password has been updated successfully. You can now sign in using your new password.");
-        setPopupType("success");
-        setShowPopup(true);
-        setPopupAction("password-updated");
-        setTimeout(() => {
-            navigate("/loginpage");
-        }, 3000);
+    if (password.trim() === "") {
+        setmissingpassword(true);
+        return;
     }
 
+    setmissingpassword(false);
+
+    if (confirmpassword.trim() === "") {
+        setmissingrepassword(true);
+        return;
+    }
+
+    setmissingrepassword(false);
+
+    // Check confirm password FIRST
+    if (password !== confirmpassword) {
+        setpasswordnotmatched(true);
+        return;
+    }
+
+    setpasswordnotmatched(false);
+
+    try {
+
+        const res = await fetch(
+            "https://airline-backend-zdo5.onrender.com/comparepassword",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        console.log("Compare password response:", data);
+
+        // New password is same as old password
+        if (data.same === true) {
+
+            setsamepassword(true);
+
+            return;
+        }
+
+        // Password was successfully updated
+        if (data.same === false) {
+
+            setsamepassword(false);
+
+            setPopupTitle("Password Updated Successfully");
+
+            setPopupMessage(
+                "Your password has been updated successfully. You can now sign in using your new password."
+            );
+
+            setPopupType("success");
+
+            setPopupAction("password-updated");
+
+            setShowPopup(true);
+
+            setTimeout(() => {
+                navigate("/loginpage");
+            }, 2000);
+
+            return;
+        }
+
+    }
+    catch (err) {
+
+        console.log("Password reset error:", err);
+
+        setPopupTitle("Server Error");
+
+        setPopupMessage(
+            "Unable to update your password. Please try again."
+        );
+
+        setPopupType("error");
+
+        setShowPopup(true);
+    }
+}
     return(
         <section className="Reset_password">
 
