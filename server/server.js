@@ -334,8 +334,128 @@ app.post("/verify_for_login", (req, res) => {
 
 });
 
-//route to get the  comparepassword
+// password reset route
 
+app.post("/forgot-password-send-otp", (req, res) => {
+
+    const { email } = req.body;
+
+    if (!email || email.trim() === "") {
+        return res.status(400).json({
+            success: false,
+            message: "Email is required"
+        });
+    }
+
+    const query = "SELECT * FROM users WHERE email = ?";
+
+    db.query(query, [email], async (error, result) => {
+
+        if (error) {
+
+            console.log(error);
+
+            return res.status(500).json({
+                success: false,
+                message: "Database error"
+            });
+        }
+
+        // Email is NOT registered
+        if (result.length === 0) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Please enter your registered email"
+            });
+        }
+
+        // Generate OTP
+        const otp = generate_otp();
+
+        // Store OTP
+        store[email] = otp;
+
+        console.log("Forgot Password OTP:", otp);
+
+        try {
+
+            const { data, error } = await brevoClient.transactionalEmails.sendTransacEmail({
+
+                sender: {
+                    email: process.env.BREVO_SENDER_EMAIL,
+                    name: "Vinayaka SkyWings"
+                },
+
+                to: [
+                    {
+                        email: email
+                    }
+                ],
+
+                subject: "OTP for Password Reset",
+
+                htmlContent: `
+                    <h2>✈ Vinayaka SkyWings Airlines</h2>
+
+                    <p>Hello,</p>
+
+                    <p>
+                        We received a request to reset your password.
+                    </p>
+
+                    <h1>${otp}</h1>
+
+                    <p>
+                        This OTP is valid for 5 minutes.
+                    </p>
+
+                    <p>
+                        If you did not request a password reset,
+                        please ignore this email.
+                    </p>
+
+                    <p>
+                        Thank you!
+                    </p>
+                `
+            });
+
+            if (error) {
+
+                console.log("Brevo error:", error);
+
+                delete store[email];
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Failed to send OTP"
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: "OTP sent successfully"
+            });
+
+        }
+        catch (err) {
+
+            console.log(err);
+
+            delete store[email];
+
+            return res.status(500).json({
+                success: false,
+                message: "Failed to send OTP"
+            });
+        }
+
+    });
+
+});
+
+//route to get the  comparepassword
 
 app.post("/comparepassword", async (req, res) => {
     const { email, password } = req.body;

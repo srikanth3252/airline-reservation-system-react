@@ -45,7 +45,7 @@ function Reset_password()
         }
         async function sendotp()
          {
-              let res=await fetch("https://airline-backend-zdo5.onrender.com/send-otp",{
+              let res=await fetch("https://airline-backend-zdo5.onrender.com/forgot-password-send-otp",{
             
                   method:"POST",
                   headers:
@@ -62,14 +62,30 @@ function Reset_password()
          try
          {
              let res=await sendotp();
-             console.log(res.message);
-             setPopupTitle("OTP Sent Successfully");
-             setPopupMessage(
+
+            if(res.success)
+            {
+                 setPopupTitle("OTP Sent Successfully");
+                 setPopupMessage(
                     "An OTP has been sent to your registered email address. Please enter the OTP below to continue with your account verification."
-              );
-            setPopupType("info");
-            setPopupAction("otp-send")
-            setShowPopup(true);
+                 );
+                setPopupType("info");
+                setPopupAction("otp-send")
+                setShowPopup(true);
+            }
+            else
+            {
+                setPopupTitle("Email Not Registered");
+                setPopupMessage(
+                    "Please enter your registered email address to receive the OTP and reset your password."
+                );
+
+                setPopupType("error");
+
+                setPopupAction("email-not-registered");
+
+                setShowPopup(true);
+            }
          }
          catch(err)
          {
