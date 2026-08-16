@@ -234,18 +234,59 @@ app.post("/verify-otp", (req, res) => {
 });
 
 // route to store user details in databases
-app.post("/sign-up",(req,res)=>{
+app.post("/sign-up", async (req, res) => {
 
-    const{email,signupuserid,signuppassword}=req.body;
-    const query="insert into users(email,userid,password) values(?,?,?)"
-    db.query(query,[email,signupuserid,signuppassword],(error,result)=>{
-        if(error)
-        {
-            return res.status(500).json({message:error.message,success:false});
-        }
-        return res.status(200).json({message:"user data is successfully stored in database",success:true});
-    })
-})
+    const {
+        email,
+        signupuserid,
+        signuppassword
+    } = req.body;
+
+    try {
+
+        // Convert plain password into bcrypt hash
+        const hashedPassword = await bcrypt.hash(signuppassword, 10);
+
+        const query =
+            "INSERT INTO users(email, userid, password) VALUES (?, ?, ?)";
+
+        db.query(
+            query,
+            [
+                email,
+                signupuserid,
+                hashedPassword
+            ],
+            (error, result) => {
+
+                if (error) {
+                    return res.status(500).json({
+                        message: error.message,
+                        success: false
+                    });
+                }
+
+                return res.status(200).json({
+                    message: "User data is successfully stored in database",
+                    success: true
+                });
+
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.log(error);
+
+        return res.status(500).json({
+            message: "Failed to create account",
+            success: false
+        });
+
+    }
+
+});
 
 // Route to verify login details
 
@@ -255,9 +296,9 @@ app.post("/verify_for_login", (req, res) => {
 
     const { userid, password } = req.body;
 
-    const query = "SELECT * FROM users WHERE userid=?";
+    const query = "SELECT * FROM users WHERE userid=? && password=?";
 
-    db.query(query, [userid], async (error, result) => {
+    db.query(query, [userid,password], async (error, result) => {
 
         if (error) {
             return res.status(500).json({
