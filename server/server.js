@@ -488,60 +488,97 @@ app.post("/forgot-password-send-otp", (req, res) => {
 
 //route to get the  comparepassword
 
-app.post("/comparepassword", async (req, res) => {
+app.post("/comparepassword", (req, res) => {
+
     const { email, password } = req.body;
-    const query = `SELECT password FROM users WHERE email = ?`;
+
+    const query = "SELECT password FROM users WHERE email = ?";
+
     db.query(query, [email], async (error, result) => {
-        if (error) 
-        {
-            return res.status(500).json({ message: error });
+
+        if (error) {
+            console.log("Database error:", error);
+
+            return res.status(500).json({
+                success: false,
+                message: "Database error"
+            });
         }
 
-        if (result.length === 0) 
-        {
+        if (result.length === 0) {
+
             return res.status(404).json({
+                success: false,
                 message: "User not found"
             });
         }
 
-        const oldHashedPassword = result[0].password;
+        try {
 
-        // Compare new password with old password
-        const samePassword = await bcrypt.compare(
-            password,
-            oldHashedPassword
-        );
+            const oldHashedPassword = result[0].password;
 
-        if (samePassword) {
-            return res.status(200).json({
-                message: "New password cannot be the same as your previous password.",
-                same:true
-            });
-        }
+            console.log("Password received:", password);
+            console.log("Stored hash:", oldHashedPassword);
 
-        // Hash the new password
-        const hashedPassword = await bcrypt.hash(password, 10);
+            const samePassword = await bcrypt.compare(
+                password,
+                oldHashedPassword
+            );
 
-        // Update password
-        const updateQuery =
-            `UPDATE users SET password = ? WHERE email = ?`;
+            console.log("Same password:", samePassword);
 
-        db.query(updateQuery,
-            [hashedPassword, email],
-            (err) => {
-
-                if (err) {
-                    return res.status(500).json({
-                        message: err
-                    });
-                }
+            if (samePassword) {
 
                 return res.status(200).json({
-                    message: "Password updated successfully",
-                    same:false
+                    success: false,
+                    same: true,
+                    message: "New password cannot be the same as your previous password."
                 });
+            }
 
+            // Different password
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            const updateQuery =
+                "UPDATE users SET password = ? WHERE email = ?";
+
+            db.query(
+                updateQuery,
+                [hashedPassword, email],
+                (updateError, updateResult) => {
+
+                    if (updateError) {
+
+                        console.log("Update error:", updateError);
+
+                        return res.status(500).json({
+                            success: false,
+                            message: "Failed to update password"
+                        });
+                    }
+
+                    console.log("Password updated");
+
+                    return res.status(200).json({
+                        success: true,
+                        same: false,
+                        message: "Password updated successfully"
+                    });
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.log("bcrypt error:", err);
+
+            return res.status(500).json({
+                success: false,
+                message: "Password comparison failed"
             });
+
+        }
 
     });
 
