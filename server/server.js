@@ -301,6 +301,8 @@ app.post("/verify_for_login", (req, res) => {
     db.query(query, [userid], async (error, result) => {
 
         if (error) {
+            console.log(error);
+
             return res.status(500).json({
                 message: error.message,
                 success: false
@@ -316,19 +318,34 @@ app.post("/verify_for_login", (req, res) => {
 
         const user = result[0];
 
-        const match = await bcrypt.compare(password, user.password);
+        try {
 
-        if (!match) {
-            return res.status(401).json({
-                message: "Invalid User ID or Password.",
+            const match = await bcrypt.compare(
+                password,
+                user.password
+            );
+
+            if (!match) {
+                return res.status(401).json({
+                    message: "Invalid User ID or Password.",
+                    success: false
+                });
+            }
+
+            return res.status(200).json({
+                message: "Login Successful",
+                success: true
+            });
+
+        } catch (err) {
+
+            console.log(err);
+
+            return res.status(500).json({
+                message: "Login failed",
                 success: false
             });
         }
-
-        return res.status(200).json({
-            message: "Login Successful",
-            success: true
-        });
 
     });
 

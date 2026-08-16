@@ -32,7 +32,7 @@ function Reset_password()
         setShowPopup(false);
     }
 
-    async function handlesendotp()
+    async function handle_sendotp()
     {
         if(email==="")
         {
@@ -258,7 +258,7 @@ function Reset_password()
                         <p>Please enter your email address.</p>
                    }
                    </div>
-                   <button className="Reset_password_button" onClick={handlesendotp}>
+                   <button className="Reset_password_button" onClick={handle_sendotp}>
                        Send OTP
                    </button>
                    <div className="Reset_password_flex">
