@@ -118,7 +118,8 @@ function Loginpage() {
 
             setShowPopup(false);
 
-            navigate("/loginpage");
+            setlogin(true);
+            setsignup(false);
 
         }
 
