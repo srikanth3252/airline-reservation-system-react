@@ -73,7 +73,7 @@ function Reset_password()
                 setPopupAction("otp-send")
                 setShowPopup(true);
             }
-            else
+            else if(res.success)
             {
                 setPopupTitle("Email Not Registered");
                 setPopupMessage(

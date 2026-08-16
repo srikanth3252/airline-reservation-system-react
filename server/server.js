@@ -298,7 +298,7 @@ app.post("/verify_for_login", (req, res) => {
 
     const query = "SELECT * FROM users WHERE userid=?";
 
-    db.query(query, [userid,password], async (error, result) => {
+    db.query(query, [userid], async (error, result) => {
 
         if (error) {
             return res.status(500).json({
@@ -353,7 +353,7 @@ app.post("/forgot-password-send-otp", (req, res) => {
 
         if (error) {
 
-            console.log(error);
+            console.log("Database error:", error);
 
             return res.status(500).json({
                 success: false,
@@ -370,68 +370,82 @@ app.post("/forgot-password-send-otp", (req, res) => {
             });
         }
 
-        // Generate OTP
         const otp = generate_otp();
 
-        // Store OTP
         store[email] = otp;
 
         console.log("Forgot Password OTP:", otp);
 
         try {
 
-            const { data, error } = await brevoClient.transactionalEmails.sendTransacEmail({
+            const response =
+                await brevo.transactionalEmails.sendTransacEmail({
 
-                sender: {
-                    email: process.env.BREVO_SENDER_EMAIL,
-                    name: "Vinayaka SkyWings"
-                },
+                    sender: {
+                        email: process.env.BREVO_SENDER_EMAIL,
+                        name: "Vinayaka SkyWings Airlines"
+                    },
 
-                to: [
-                    {
-                        email: email
-                    }
-                ],
+                    to: [
+                        {
+                            email: email
+                        }
+                    ],
 
-                subject: "OTP for Password Reset",
+                    subject: "OTP for Password Reset",
 
-                htmlContent: `
-                    <h2>✈ Vinayaka SkyWings Airlines</h2>
+                    htmlContent: `
+                        <div style="
+                            font-family: Arial;
+                            max-width: 600px;
+                            margin: auto;
+                            padding: 20px;
+                        ">
 
-                    <p>Hello,</p>
+                            <h2>✈ Vinayaka SkyWings Airlines</h2>
 
-                    <p>
-                        We received a request to reset your password.
-                    </p>
+                            <p>Hello,</p>
 
-                    <h1>${otp}</h1>
+                            <p>
+                                We received a request to reset your password.
+                            </p>
 
-                    <p>
+                            <h1 style="
+                                text-align: center;
+                                letter-spacing: 8px;
+                            ">
+                                ${otp}
+                            </h1>
+
+                            <p>
+                                This OTP is valid for 5 minutes.
+                            </p>
+
+                            <p>
+                                If you did not request a password reset,
+                                please ignore this email.
+                            </p>
+
+                            <p>
+                                Have a safe and pleasant journey! ✈
+                            </p>
+
+                        </div>
+                    `,
+
+                    textContent: `
+                        Vinayaka SkyWings Airlines
+
+                        Your password reset OTP is: ${otp}
+
                         This OTP is valid for 5 minutes.
-                    </p>
 
-                    <p>
-                        If you did not request a password reset,
+                        If you did not request this password reset,
                         please ignore this email.
-                    </p>
-
-                    <p>
-                        Thank you!
-                    </p>
-                `
-            });
-
-            if (error) {
-
-                console.log("Brevo error:", error);
-
-                delete store[email];
-
-                return res.status(500).json({
-                    success: false,
-                    message: "Failed to send OTP"
+                    `
                 });
-            }
+
+            console.log("Brevo response:", response);
 
             return res.status(200).json({
                 success: true,
@@ -441,7 +455,7 @@ app.post("/forgot-password-send-otp", (req, res) => {
         }
         catch (err) {
 
-            console.log(err);
+            console.log("Brevo error:", err);
 
             delete store[email];
 
