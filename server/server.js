@@ -296,7 +296,7 @@ app.post("/verify_for_login", (req, res) => {
 
     const { userid, password } = req.body;
 
-    const query = "SELECT * FROM users WHERE userid=? && password=?";
+    const query = "SELECT * FROM users WHERE userid=?";
 
     db.query(query, [userid,password], async (error, result) => {
 
