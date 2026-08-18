@@ -1,0 +1,323 @@
+/* ================================
+   MY BOOKINGS PAGE
+================================ */
+
+.my-bookings {
+    min-height: 100vh;
+    padding: 45px 20px 70px;
+    background: linear-gradient(135deg, #f4f8ff, #eef3f9);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* ================================
+   PAGE TITLE
+================================ */
+
+.my-bookings > h1 {
+    text-align: center;
+    font-size: 38px;
+    color: #12345b;
+    margin-bottom: 40px;
+    font-weight: 700;
+}
+
+
+/* ================================
+   NO BOOKINGS
+================================ */
+
+.my-bookings > p {
+    text-align: center;
+    color: #64748b;
+    font-size: 18px;
+}
+
+
+/* ================================
+   BOOKING CARD
+================================ */
+
+.booking-card {
+    width: 90%;
+    max-width: 850px;
+
+    margin: 0 auto 30px;
+
+    background: white;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+
+    padding: 30px 35px;
+
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+
+    transition: all 0.25s ease;
+
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* blue line at top */
+
+.booking-card::before {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 5px;
+
+    background: linear-gradient(
+        90deg,
+        #1677ff,
+        #00a8ff
+    );
+}
+
+
+.booking-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.13);
+}
+
+
+/* ================================
+   AIRLINE
+================================ */
+
+.booking-card h2 {
+    color: #1677ff;
+
+    font-size: 25px;
+
+    margin: 5px 0 18px;
+
+    font-weight: 700;
+}
+
+
+/* ================================
+   ROUTE
+================================ */
+
+.booking-card > h3 {
+    font-size: 24px;
+
+    color: #173b63;
+
+    margin-bottom: 22px;
+
+    font-weight: 600;
+}
+
+
+/* ================================
+   BOOKING INFORMATION
+================================ */
+
+.booking-card > p {
+    font-size: 16px;
+
+    color: #475569;
+
+    margin: 10px 0;
+
+    line-height: 1.5;
+}
+
+
+.booking-card > p strong {
+    color: #193b60;
+}
+
+
+/* ================================
+   HORIZONTAL LINE
+================================ */
+
+.booking-card hr {
+    border: none;
+
+    border-top: 1px solid #e2e8f0;
+
+    margin: 24px 0;
+}
+
+
+/* ================================
+   PASSENGER HEADING
+================================ */
+
+.booking-card > h3:nth-of-type(2) {
+    font-size: 20px;
+
+    color: #173b63;
+
+    margin-bottom: 15px;
+}
+
+
+/* ================================
+   PASSENGER BOX
+================================ */
+
+.passenger-box {
+    background: #f8fafc;
+
+    border: 1px solid #dce5ef;
+
+    border-radius: 12px;
+
+    padding: 18px 20px;
+
+    margin: 12px 0;
+
+    transition: all 0.2s ease;
+}
+
+
+.passenger-box:hover {
+    background: #f1f7ff;
+
+    border-color: #b8d4f5;
+
+    transform: translateX(3px);
+}
+
+
+.passenger-box p {
+    margin: 7px 0;
+
+    font-size: 15px;
+
+    color: #475569;
+}
+
+
+.passenger-box strong {
+    color: #1e3a5f;
+}
+
+
+/* remove hr inside passenger box */
+
+.passenger-box hr {
+    margin: 14px 0 0;
+
+    border-top: 1px solid #e2e8f0;
+}
+
+
+/* ================================
+   PAYMENT + BOOKING STATUS
+================================ */
+
+.booking-card > p:nth-last-of-type(2),
+.booking-card > p:nth-last-of-type(1) {
+    font-size: 16px;
+
+    background: #f8fafc;
+
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    width: fit-content;
+}
+
+
+/* ================================
+   VIEW TICKET BUTTON
+================================ */
+
+.booking-card button {
+    margin-top: 15px;
+
+    padding: 12px 24px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: linear-gradient(
+        135deg,
+        #1677ff,
+        #0d63d8
+    );
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+
+    box-shadow: 0 5px 12px rgba(22, 119, 255, 0.25);
+}
+
+
+.booking-card button:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 18px rgba(22, 119, 255, 0.35);
+}
+
+
+.booking-card button:active {
+    transform: scale(0.96);
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 700px) {
+
+    .my-bookings {
+        padding: 30px 12px 50px;
+    }
+
+    .my-bookings > h1 {
+        font-size: 30px;
+
+        margin-bottom: 30px;
+    }
+
+    .booking-card {
+        width: 100%;
+
+        padding: 24px 20px;
+
+        border-radius: 15px;
+    }
+
+    .booking-card h2 {
+        font-size: 22px;
+    }
+
+    .booking-card > h3 {
+        font-size: 20px;
+    }
+
+    .booking-card > p {
+        font-size: 15px;
+    }
+
+    .passenger-box {
+        padding: 15px;
+    }
+
+    .booking-card button {
+        width: 100%;
+    }
+}

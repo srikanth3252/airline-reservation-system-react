@@ -166,13 +166,20 @@ function Search()
 
                 <div className="flexs1">
                     <label>From:</label>
-                    <input type="text"
-                     placeholder="enter your depature place"
-                     onChange={(e)=>{
-                        setfrom(e.target.value);
-                     }}
-                     value={from}
-                    />
+                    <select
+                        value={from}
+                        onChange={(e) => 
+                        {
+                            setfrom(e.target.value);
+                        }}
+                        >
+                        <option value="">Select Departure</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Bangalore">Bangalore</option>
+                    </select>
                     {
                         missingfrom &&
                         <p className="p1">Please select your departure city.</p>
@@ -181,13 +188,20 @@ function Search()
 
                 <div className="flexs1">
                     <label>To:</label>
-                    <input type="text"
-                     placeholder="enter where you want to go"
-                     onChange={(e)=>{
-                        setto(e.target.value);
-                     }}
-                     value={to}
-                    />
+                    <select
+                        value={to}
+                        onChange={(e) => 
+                        {
+                            setto(e.target.value);
+                        }}
+                        >
+                        <option value="">Select Departure</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Bangalore">Bangalore</option>
+                    </select>
 
                     {
                         missingto &&

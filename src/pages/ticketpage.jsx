@@ -10,6 +10,9 @@ function Ticket() {
     const location = useLocation();
     const ticketRef = useRef(null);
 
+    const [ticketCooldown, setTicketCooldown] = useState(false);
+    const [ticketTime, setTicketTime] = useState(29);
+
     const { bool, pnr } = location.state;
     const [ticketSent, setTicketSent] = useState(false);
     const bookingId = useRef("BK" + Math.floor(Math.random() * 1000000));
@@ -89,62 +92,85 @@ function Ticket() {
 
     async function downloadPDF() {
 
-        const canvas = await html2canvas(ticketRef.current);
+    const canvas = await html2canvas(ticketRef.current);
 
-        const imgData = canvas.toDataURL("image/png");
+    const imgData = canvas.toDataURL("image/png");
 
-        const pdf = new jsPDF("p", "mm", "a4");
+    const pdf = new jsPDF("p", "mm", "a4");
 
-        const width = 210;
+    const width = 210;
+    const height = canvas.height * width / canvas.width;
 
-        const height = canvas.height * width / canvas.width;
+    pdf.addImage(imgData, "PNG", 0, 0, width, height);
 
-        pdf.addImage(imgData, "PNG", 0, 0, width, height);
+    const blob = pdf.output("blob");
 
-        const blob = pdf.output("blob");
+    const formData = new FormData();
 
-        const formData = new FormData();
+    formData.append("ticket", blob, "ticket.pdf");
+    formData.append("email", email);
 
-        formData.append("ticket", blob, "ticket.pdf");
+    try {
 
-        formData.append("email", email);
-
-        try {
-
-            const res = await fetch("https://airline-backend-zdo5.onrender.com/send_ticket", {
-
-                method: "POST",
-
-                body: formData
-
-            });
-
-            const data = await res.json();
-
-            console.log(data.message);
-            if(data.success)
+        const res = await fetch(
+            "https://airline-backend-zdo5.onrender.com/send_ticket",
             {
-                setTicketSent(true);
+                method: "POST",
+                body: formData
             }
+        );
 
-        }
-        catch (err) {
+        const data = await res.json();
 
-            console.log(err);
+        console.log(data.message);
 
+        if (data.success) {
+            setTicketSent(true);
         }
 
     }
+    catch (err) {
+
+        console.log(err);
+
+    }
+}
+
+async function handlePrintAndSend() {
+
+    if (ticketCooldown) return;
+
+    setTicketCooldown(true);
+    setTicketTime(30);
+
+    window.print();
+
+    await downloadPDF();
+
+    const timer = setInterval(() => {
+
+        setTicketTime((prev) => {
+
+            if (prev <= 1) {
+
+                clearInterval(timer);
+                setTicketCooldown(false);
+
+                return 30;
+            }
+
+            return prev - 1;
+
+        });
+
+    }, 1000);
+}
 
     if (!flight) {
 
         return <h2>Loading Ticket...</h2>;
 
     }
-    console.log("bookingId =", bookingId);
-console.log("pnr =", pnr);
-console.log("flight =", flight);
-console.log("travelClass =", travelClass);
     return (
 
         <section className="ticket-page">
@@ -179,7 +205,7 @@ console.log("travelClass =", travelClass);
 
                         <strong>PNR</strong>
 
-                        <p>{pnr.current}</p>
+                        <p>{pnr}</p>
 
                     </div>
 
@@ -352,16 +378,17 @@ console.log("travelClass =", travelClass);
 
                 <div className="ticket-buttons">
 
+                    
                     <button
-                        onClick={async () => {
-
-                            window.print();
-                            await downloadPDF();
-
-                        }}
+                        onClick={handlePrintAndSend}
+                        disabled={ticketCooldown}
                     >
-                        🖨 Print & Send Ticket
+                        {ticketCooldown
+                        ? `Ticket Sent • Wait ${ticketTime}s`
+                        : "🖨 Print & Send Ticket"
+                        }
                     </button>
+
                     {
                        ticketSent && (
                          <p className="success-message">

@@ -11,6 +11,9 @@ function Loginpage() {
 
     const k = location.state?.k || false;
 
+    const [otpCooldown, setOtpCooldown] = useState(false);
+    const [remainingTime, setRemainingTime] = useState(29);
+
     const [showlogout, setshowlogout] = useState(k);
 
     const [login, setlogin] = useState(true);
@@ -229,7 +232,12 @@ function Loginpage() {
     // SEND OTP
     // =========================================================
 
-    async function handlesendotp() {
+    async function handlesendotp() 
+    {   
+        if (otpCooldown) 
+        {
+            return;
+        }
 
         if (email.trim() === "") {
 
@@ -240,6 +248,25 @@ function Loginpage() {
 
         setmissingemail(false);
 
+        // Start 20 second cooldown
+        setOtpCooldown(true);
+        setRemainingTime(29);
+
+        const timer = setInterval(() => {
+
+        setRemainingTime((prev) => {
+
+            if (prev <= 1) {
+                clearInterval(timer);
+                setOtpCooldown(false);
+                return 30;
+            }
+
+            return prev - 1;
+
+        });
+
+        }, 1000);
 
         try {
 
@@ -772,8 +799,12 @@ function Loginpage() {
                             type="button"
                             className="submit-btn1"
                             onClick={handlesendotp}
+                            disabled={otpCooldown}
                         >
-                            Send OTP
+                            {otpCooldown
+                            ? `Resend OTP in ${remainingTime}s`
+                            : "Send OTP"
+                            }
                         </button>
 
 

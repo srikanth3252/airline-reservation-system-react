@@ -8,6 +8,8 @@ import Popup from "../components/popuppage.jsx";
 function Reset_password()
 {   
     const navigate=useNavigate();
+    const [otpCooldown, setOtpCooldown] = useState(false);
+    const [remainingTime, setRemainingTime] = useState(29);
     const [missingotp,setmissingotp]=useState(false);
     const [missingemail,setmissingemail]=useState(false);
     const [missingpassword,setmissingpassword]=useState(false);
@@ -32,66 +34,113 @@ function Reset_password()
         setShowPopup(false);
     }
 
-    async function handle_sendotp()
-    {
-        if(email==="")
-        {
-            setmissingemail(true);
-            return;
-        }
-        else
-        {
-            setmissingemail(false);
-        }
-        async function sendotp()
-         {
-              let res=await fetch("https://airline-backend-zdo5.onrender.com/forgot-password-send-otp",{
-            
-                  method:"POST",
-                  headers:
-                  {
-                    "Content-Type":"application/json"
-                  },
-                  body:JSON.stringify({email:email})
-              });
+async function handle_sendotp() {
 
-              let data=await res.json();
-              return data;
-         }
-
-         try
-         {
-             let res=await sendotp();
-
-            if(res.success)
-            {
-                 setPopupTitle("OTP Sent Successfully");
-                 setPopupMessage(
-                    "An OTP has been sent to your registered email address. Please enter the OTP below to continue with your account verification."
-                 );
-                setPopupType("info");
-                setPopupAction("otp-send")
-                setShowPopup(true);
-            }
-            else if(res.success)
-            {
-                setPopupTitle("Email Not Registered");
-                setPopupMessage(
-                    "Please enter your registered email address to receive the OTP and reset your password."
-                );
-
-                setPopupType("error");
-
-                setPopupAction("email-not-registered");
-
-                setShowPopup(true);
-            }
-         }
-         catch(err)
-         {
-            console.log(err);
-         }
+    if (otpCooldown) {
+        return;
     }
+
+    if (email.trim() === "") {
+
+        setmissingemail(true);
+        return;
+
+    }
+
+    setmissingemail(false);
+
+    try {
+
+        const res = await fetch(
+            "https://airline-backend-zdo5.onrender.com/forgot-password-send-otp",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    email: email
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        if (data.success) {
+
+            // Start 30 second cooldown ONLY after successful OTP sending
+            setOtpCooldown(true);
+            setRemainingTime(30);
+
+            const timer = setInterval(() => {
+
+                setRemainingTime((prev) => {
+
+                    if (prev <= 1) {
+
+                        clearInterval(timer);
+
+                        setOtpCooldown(false);
+
+                        return 30;
+                    }
+
+                    return prev - 1;
+
+                });
+
+            }, 1000);
+
+
+            setPopupTitle("OTP Sent Successfully");
+
+            setPopupMessage(
+                "An OTP has been sent to your registered email address. Please enter the OTP below to continue with your account verification."
+            );
+
+            setPopupType("info");
+
+            setPopupAction("otp-send");
+
+            setShowPopup(true);
+
+        }
+        else {
+
+            setPopupTitle("Email Not Registered");
+
+            setPopupMessage(
+                "Please enter your registered email address to receive the OTP and reset your password."
+            );
+
+            setPopupType("error");
+
+            setPopupAction("email-not-registered");
+
+            setShowPopup(true);
+
+        }
+
+    }
+    catch (err) {
+
+        console.log(err);
+
+        setPopupTitle("Server Error");
+
+        setPopupMessage(
+            "Unable to send OTP. Please try again later."
+        );
+
+        setPopupType("error");
+
+        setShowPopup(true);
+
+    }
+
+}
 
      // function to handle verify otp
     async function handleverifyotp()
@@ -275,9 +324,18 @@ function Reset_password()
                         <p>Please enter your email address.</p>
                    }
                    </div>
-                   <button className="Reset_password_button" onClick={handle_sendotp}>
-                       Send OTP
-                   </button>
+
+                   <button
+                        className="Reset_password_button"
+                        onClick={handle_sendotp}
+                        disabled={otpCooldown}
+                    >
+                        {otpCooldown
+                        ? `Resend OTP in ${remainingTime}s`
+                        : "Send OTP"
+                        }
+                    </button>
+
                    <div className="Reset_password_flex">
                    <label>Enter OTP</label>
                    <p>Enter the OTP sent to your registered email address.</p>
