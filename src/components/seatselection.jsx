@@ -32,7 +32,7 @@ useEffect(() => {
                 {
                       "Content-Type":"application/json"
                 },
-                body:JSON.stringify({travelClass:travelClass})
+                body:JSON.stringify({travelClass:travelClass,flight_id:flight.flight_id})
             });
 
             let data = await res.json();

@@ -613,13 +613,13 @@ app.post("/get_flights",(req,res)=>{
 
 app.post("/get_bookedseats",(req,res)=>{
 
-    const { travelClass } = req.body;
+    const { travelClass,flight_id} = req.body;
 
     console.log("Travel Class:", travelClass);
 
-    const query = "SELECT seat_no FROM bookings WHERE travel_class=?";
+    const query = "SELECT seat_no FROM bookings WHERE travel_class=? && flight_id=?";
 
-    db.query(query,[travelClass],(error,result)=>{
+    db.query(query,[travelClass,flight_id],(error,result)=>{
 
         if(error)
         {
