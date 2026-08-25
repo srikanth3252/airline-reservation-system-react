@@ -122,7 +122,6 @@ function Ticket() {
 
         const data = await res.json();
 
-        console.log(data.message);
 
         if (data.success) {
             setTicketSent(true);

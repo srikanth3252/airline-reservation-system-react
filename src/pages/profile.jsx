@@ -45,7 +45,6 @@ function Profile()
                 })
             });
             let data = await res.json();
-            console.log(data.message);
             if(data.success)
             {
                 setfullname(data.profile.fullname || "");
@@ -191,7 +190,6 @@ function Profile()
             });
 
             let data=await res.json();
-            console.log(data.message);
         }
         catch(err)
         {

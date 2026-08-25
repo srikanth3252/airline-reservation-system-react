@@ -172,7 +172,6 @@ async function handle_sendotp() {
          try
          {
              let res=await verifyotp();
-             console.log(res.message);
              if(res.success)
              { 
                 setPopupTitle("OTP Verified");
@@ -243,8 +242,6 @@ async function handle_sendotp() {
 
         const data = await res.json();
 
-        console.log("Compare password response:", data);
-
         // New password is same as old password
         if (data.same === true) {
 
@@ -279,8 +276,6 @@ async function handle_sendotp() {
 
     }
     catch (err) {
-
-        console.log("Password reset error:", err);
 
         setPopupTitle("Server Error");
 

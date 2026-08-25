@@ -50,8 +50,6 @@ function Passenger_details()
 
                 const data = await res.json();
 
-                console.log(data.message);
-
                 if (data.email) {
                     setemail(data.email);
                 }

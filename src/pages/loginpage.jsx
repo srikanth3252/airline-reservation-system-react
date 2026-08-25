@@ -190,8 +190,6 @@ function Loginpage() {
 
             const data = await res.json();
 
-            console.log(data);
-
 
             if (data.success) {
 
@@ -288,8 +286,6 @@ function Loginpage() {
 
             const data = await res.json();
 
-            console.log("Send OTP response:", data);
-
 
             // OTP successfully sent
             if (data.success) {
@@ -347,8 +343,6 @@ function Loginpage() {
 
         catch (err) {
 
-            console.log("Send OTP error:", err);
-
             setPopupTitle("Server Error");
 
             setPopupMessage(
@@ -401,7 +395,6 @@ function Loginpage() {
 
             const data = await res.json();
 
-            console.log("Verify OTP response:", data);
 
 
             // OTP verified
@@ -440,7 +433,6 @@ function Loginpage() {
 
         catch (err) {
 
-            console.log("Verify OTP error:", err);
 
             setPopupTitle("Server Error");
 
@@ -520,8 +512,6 @@ function Loginpage() {
 
 
             const data = await res.json();
-
-            console.log(data);
 
 
             if (data.success) {

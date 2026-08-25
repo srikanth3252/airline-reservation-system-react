@@ -193,7 +193,6 @@ setTimeout(() => {
         try
         {
             let res=await store_data();
-            console.log(res.message);
         }
         catch(err)
         {

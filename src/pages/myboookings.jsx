@@ -29,9 +29,6 @@ function Mybookings() {
                 });
 
                 let data = await res.json();
-
-                console.log(data);
-
                 if (data.success) {
 
                     const grouped = {};

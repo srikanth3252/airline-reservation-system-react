@@ -63,7 +63,7 @@ app.post("/send-otp", (req, res) => {
         // Database error
         if (err) {
 
-            console.log("Database error:", err);
+            
 
             return res.status(500).json({
                 success: false,
@@ -90,7 +90,7 @@ app.post("/send-otp", (req, res) => {
 
         store[email] = otp;
 
-        console.log("Generated OTP:", otp);
+        
 
 
         // =================================================
@@ -179,7 +179,7 @@ app.post("/send-otp", (req, res) => {
             });
 
 
-            console.log("Brevo response:", result);
+            
 
 
             return res.status(200).json({
@@ -194,7 +194,7 @@ app.post("/send-otp", (req, res) => {
         }
         catch (error) {
 
-            console.log("Brevo error:", error);
+          
 
             // Remove OTP if email failed
             delete store[email];
@@ -277,7 +277,7 @@ app.post("/sign-up", async (req, res) => {
     }
     catch (error) {
 
-        console.log(error);
+        
 
         return res.status(500).json({
             message: "Failed to create account",
@@ -301,7 +301,6 @@ app.post("/verify_for_login", (req, res) => {
     db.query(query, [userid], async (error, result) => {
 
         if (error) {
-            console.log(error);
 
             return res.status(500).json({
                 message: error.message,
@@ -339,8 +338,6 @@ app.post("/verify_for_login", (req, res) => {
 
         } catch (err) {
 
-            console.log(err);
-
             return res.status(500).json({
                 message: "Login failed",
                 success: false
@@ -370,8 +367,6 @@ app.post("/forgot-password-send-otp", (req, res) => {
 
         if (error) {
 
-            console.log("Database error:", error);
-
             return res.status(500).json({
                 success: false,
                 message: "Database error"
@@ -390,8 +385,6 @@ app.post("/forgot-password-send-otp", (req, res) => {
         const otp = generate_otp();
 
         store[email] = otp;
-
-        console.log("Forgot Password OTP:", otp);
 
         try {
 
@@ -462,8 +455,6 @@ app.post("/forgot-password-send-otp", (req, res) => {
                     `
                 });
 
-            console.log("Brevo response:", response);
-
             return res.status(200).json({
                 success: true,
                 message: "OTP sent successfully"
@@ -471,8 +462,6 @@ app.post("/forgot-password-send-otp", (req, res) => {
 
         }
         catch (err) {
-
-            console.log("Brevo error:", err);
 
             delete store[email];
 
@@ -497,7 +486,6 @@ app.post("/comparepassword", (req, res) => {
     db.query(query, [email], async (error, result) => {
 
         if (error) {
-            console.log("Database error:", error);
 
             return res.status(500).json({
                 success: false,
@@ -517,15 +505,10 @@ app.post("/comparepassword", (req, res) => {
 
             const oldHashedPassword = result[0].password;
 
-            console.log("Password received:", password);
-            console.log("Stored hash:", oldHashedPassword);
-
             const samePassword = await bcrypt.compare(
                 password,
                 oldHashedPassword
             );
-
-            console.log("Same password:", samePassword);
 
             if (samePassword) {
 
@@ -549,15 +532,11 @@ app.post("/comparepassword", (req, res) => {
 
                     if (updateError) {
 
-                        console.log("Update error:", updateError);
-
                         return res.status(500).json({
                             success: false,
                             message: "Failed to update password"
                         });
                     }
-
-                    console.log("Password updated");
 
                     return res.status(200).json({
                         success: true,
@@ -571,7 +550,7 @@ app.post("/comparepassword", (req, res) => {
         }
         catch (err) {
 
-            console.log("bcrypt error:", err);
+            
 
             return res.status(500).json({
                 success: false,
@@ -615,7 +594,7 @@ app.post("/get_bookedseats",(req,res)=>{
 
     const { travelClass,flight_id} = req.body;
 
-    console.log("Travel Class:", travelClass);
+    
 
     const query = "SELECT seat_no FROM bookings WHERE travel_class=? && flight_id=?";
 
@@ -623,7 +602,6 @@ app.post("/get_bookedseats",(req,res)=>{
 
         if(error)
         {
-            console.log(error);
             return res.status(500).json({
                 message:error.message
             });
@@ -1028,9 +1006,6 @@ app.post(
                 });
 
 
-            console.log("Ticket email sent:", result);
-
-
             return res.status(200).json({
 
                 success: true,
@@ -1042,8 +1017,6 @@ app.post(
         }
 
         catch (err) {
-
-            console.log("Send ticket error:", err);
 
             return res.status(500).json({
 
