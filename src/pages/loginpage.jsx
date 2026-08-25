@@ -529,7 +529,7 @@ function Loginpage() {
                 setPopupTitle("Registration Successful");
 
                 setPopupMessage(
-                    "Your account has been created successfully. You can now login and start booking your flights with Vinayaka SkyWings Airlines."
+                    "Your account has been created successfully. You can now login and start booking your flights with Indian AirConnect Airlines."
                 );
 
                 setPopupType("success");

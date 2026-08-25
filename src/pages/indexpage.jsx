@@ -10,14 +10,14 @@ function Homepage()
        <div className="homepage">
 
     <div className="flex2">
-        <h1>Vinayaka SkyWings Airlines</h1>
+        <h1>Indian AirConnect Airlines</h1>
 
         <button type="button" onClick={()=>{navigate("/loginpage")}}>Login</button>
     </div>
 
     <div className="flex1">
 
-        <h2>Welcome to Vinayaka SkyWings Airlines</h2>
+        <h2>Welcome to Indian AirConnect Airlines</h2>
 
         <h2>
             Your journey begins with comfort, safety,

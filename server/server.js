@@ -102,7 +102,7 @@ app.post("/send-otp", (req, res) => {
             const result = await brevo.transactionalEmails.sendTransacEmail({
 
                 sender: {
-                    name: "Vinayaka SkyWings Airlines",
+                    name: "Indian AirConnect Airlines",
                     email: process.env.BREVO_SENDER_EMAIL
                 },
 
@@ -112,7 +112,7 @@ app.post("/send-otp", (req, res) => {
                     }
                 ],
 
-                subject: "OTP Verification - Vinayaka SkyWings Airlines",
+                subject: "OTP Verification - Indian AirConnect Airlines",
 
                 htmlContent: `
 
@@ -126,11 +126,11 @@ app.post("/send-otp", (req, res) => {
                     ">
 
                         <h2>
-                            ✈ Vinayaka SkyWings Airlines
+                            ✈ Indian AirConnect Airlines
                         </h2>
 
                         <p>
-                            Welcome to Vinayaka SkyWings Airlines!
+                            Welcome to Indian AirConnect Airlines!
                         </p>
 
                         <p>
@@ -155,7 +155,7 @@ app.post("/send-otp", (req, res) => {
 
                         <p>
                             Thank you for choosing
-                            Vinayaka SkyWings Airlines.
+                            Indian AirConnect Airlines.
                         </p>
 
                         <p>
@@ -167,7 +167,7 @@ app.post("/send-otp", (req, res) => {
                 `,
 
                 textContent: `
-                    Vinayaka SkyWings Airlines
+                    Indian AirConnect Airlines
 
                     Your OTP is: ${otp}
 
@@ -400,7 +400,7 @@ app.post("/forgot-password-send-otp", (req, res) => {
 
                     sender: {
                         email: process.env.BREVO_SENDER_EMAIL,
-                        name: "Vinayaka SkyWings Airlines"
+                        name: "Indian AirConnect Airlines"
                     },
 
                     to: [
@@ -419,7 +419,7 @@ app.post("/forgot-password-send-otp", (req, res) => {
                             padding: 20px;
                         ">
 
-                            <h2>✈ Vinayaka SkyWings Airlines</h2>
+                            <h2>✈ Indian AirConnect Airlines</h2>
 
                             <p>Hello,</p>
 
@@ -451,7 +451,7 @@ app.post("/forgot-password-send-otp", (req, res) => {
                     `,
 
                     textContent: `
-                        Vinayaka SkyWings Airlines
+                        Indian AirConnect Airlines
 
                         Your password reset OTP is: ${otp}
 
@@ -943,7 +943,7 @@ app.post(
                 await brevo.transactionalEmails.sendTransacEmail({
 
                     sender: {
-                        name: "Vinayaka SkyWings Airlines",
+                        name: "Indian AirConnect Airlines",
                         email: process.env.BREVO_SENDER_EMAIL
                     },
 
@@ -965,7 +965,7 @@ app.post(
                         ">
 
                             <h2>
-                                ✈ Vinayaka SkyWings Airlines
+                                ✈ Indian AirConnect Airlines
                             </h2>
 
                             <h2>
@@ -1002,7 +1002,7 @@ app.post(
                     `,
 
                     textContent: `
-                        Vinayaka SkyWings Airlines
+                        Indian AirConnect Airlines
 
                         Booking Confirmed.
 

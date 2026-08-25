@@ -181,7 +181,7 @@ useEffect(() => {
                     </div>
                 )}
 
-              <h1 className="h12">✈ Vinayaka SkyWings</h1>
+              <h1 className="h12">✈ Indian AirConnect</h1>
               <div className="flex-row">
                   
                 <div className="flightdetails">
