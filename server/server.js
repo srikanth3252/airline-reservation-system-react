@@ -1251,62 +1251,47 @@ app.post("/check_profile_completion", async (req, res) => {
         const { userid } = req.body;
 
         if (!userid) {
-            return res.json({
+            return res.status(400).json({
                 success: false,
-                complete: false,
                 message: "User ID is required"
             });
         }
 
         const [rows] = await db.query(
-            "SELECT * FROM profile WHERE userid = ?",
+            `SELECT fullname, dob, gender, phonenumber, nationality,
+                    address, city, state, country, pincode, aadhaar
+             FROM profile
+             WHERE userid = ?`,
             [userid]
         );
 
         if (rows.length === 0) {
-            return res.json({
+            return res.status(200).json({
                 success: true,
-                complete: false,
+                completed: false,
                 message: "Profile not found"
             });
         }
 
         const profile = rows[0];
 
-        const requiredFields = [
-            "fullname",
-            "dob",
-            "gender",
-            "phonenumber",
-            "nationality",
-            "address",
-            "city",
-            "state",
-            "country",
-            "pincode",
-            "aadhaar"
-        ];
-
-        const missingFields = requiredFields.filter(
-            field => !String(profile[field] || "").trim()
+        const completed = Object.values(profile).every(
+            value => value !== null && String(value).trim() !== ""
         );
 
-        return res.json({
+        return res.status(200).json({
             success: true,
-            complete: missingFields.length === 0,
-            missingFields,
-            message:
-                missingFields.length === 0
-                    ? "Profile completed"
-                    : "Please complete your profile"
+            completed,
+            message: completed
+                ? "Profile completed"
+                : "Please complete your profile"
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("Profile completion error:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
-            complete: false,
             message: "Server error"
         });
     }
