@@ -1,153 +1,236 @@
+
 import { useState } from "react";
 import "../styles/flight-card.css";
-import Seatselection from "../components/seatselection.jsx";
 import { useNavigate } from "react-router-dom";
 
-function FlightCard({flight,travelClass,val})
-{  
-    const navigate=useNavigate();
-    const [viewremainingseats,setviewremainingseats]=useState(false);
+function FlightCard({ flight, travelClass, val }) {
+    const navigate = useNavigate();
+    const [viewremainingseats, setviewremainingseats] = useState(false);
+
     let availableSeats = 0;
-    let ticketprice;
-        if(travelClass==="Economy")
+    let ticketprice = 0;
+
+    if (travelClass === "Economy") {
+        availableSeats = flight.economy_seats;
+        ticketprice = flight.economy_price;
+    } else if (travelClass === "Premium Economy") {
+        availableSeats = flight.premium_economy_seats;
+        ticketprice = flight.premium_economy_price;
+    } else if (travelClass === "Business") {
+        availableSeats = flight.business_seats;
+        ticketprice = flight.business_price;
+    } else {
+        availableSeats = flight.first_class_seats;
+        ticketprice = flight.first_class_price;
+    }
+
+    const enoughSeats = Number(availableSeats) >= Number(val);
+
+    const formatDate = (date) =>
+        new Date(date).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
+
+    const classes = [
         {
-            availableSeats = flight.economy_seats;
-            ticketprice=flight.economy_price;
-        }
-        else if(travelClass==="Premium Economy")
+            name: "Economy",
+            seats: flight.economy_seats,
+            price: flight.economy_price,
+        },
         {
-            availableSeats = flight.premium_economy_seats;
-            ticketprice=flight.premium_economy_price;
-        }
-        else if(travelClass==="Business")
+            name: "Premium Economy",
+            seats: flight.premium_economy_seats,
+            price: flight.premium_economy_price,
+        },
         {
-            availableSeats = flight.business_seats;
-            ticketprice=flight.business_price;
-        }
-        else
+            name: "Business",
+            seats: flight.business_seats,
+            price: flight.business_price,
+        },
         {
-            availableSeats = flight.first_class_seats;
-            ticketprice=flight.first_class_price;
-        }
-        const enoughSeats = availableSeats >= Number(val);
-    return(
-      <section className="FlightCard">
+            name: "First Class",
+            seats: flight.first_class_seats,
+            price: flight.first_class_price,
+        },
+    ];
 
-          <div className="FlightCard-box">
-              
-              <h1>{flight.airline_name}</h1>
+    return (
+        <section className="FlightCard">
+            <div className="FlightCard-box">
 
-              <div className="manage-route">
-                   <h1>{flight.from_city}</h1>
-                   <h1>{flight.to_city}</h1>
-              </div>
-
-              <div className="manage-dates">
-
-              <div>
-                <p>Departure Date</p>
-                <h3>{new Date(flight.departure_date).toLocaleDateString("en-IN")}</h3>
-              </div>
-
-              <div>
-                <p>Departure Time</p>
-                <h3>{flight.departure_time}</h3>
-              </div>
-
-              <div>
-                <p>Arrival Time</p>
-                <h3>{flight.arrival_time}</h3>
-              </div>
-
-              </div>
-              
-              <div className="manage-class">
-
-                <h1> {travelClass}:</h1>
-                  {
-                        enoughSeats ?
-                        <>
-                           <div className="manage-buttons">
-                             <p>Available Seats : {availableSeats}</p>
-
-                             <p>💰 Price : ₹{ticketprice}</p>
-                                  
-                            <button
-                                onClick={() => {
-                                navigate("/seatselection", {
-                                        state: {
-                                            flight: flight,
-                                            travelClass: travelClass,
-                                            noofpeople: val,
-                                            ticketprice:ticketprice,
-                                            availableSeats:availableSeats
-                                        }
-                                        });
-                                 }}
-                            >Select Seat</button>
-                           </div>
-                        </>
-                        :
-                        <>
-                            <p style={{color:"red"}}>
-                                    Your selected class does not have enough seats.
-                                    once check the remaining seats below.
-                            </p>
-
-                            <p>
-                                Please choose another travel class after checking the remaining seats.
-                            </p>
-                            <button  onClick={()=>{setviewremainingseats(true)}}  className="view_seats">view remaining seats</button>
-                        </>
-                   }
-
-                   {
-                        viewremainingseats &&
-                        <div className="remaining-seats">
-                                <h2>Remaining Seats</h2>
-
-                                <p><strong>Total Seats :</strong> {flight.total_seats}</p>
-
-                                <div className={`class-box ${travelClass==="Economy" ? "selected-class" : ""}`}>
-                                        <h3>Economy</h3>
-                                        <p>💺 Available Seats : {flight.economy_seats}</p>
-                                        <p>💰 Price : ₹{flight.economy_price}</p>
-                                </div>
-
-                                 <div className={`class-box ${travelClass==="Premium Economy" ? "selected-class" : ""}`}>
-                                        <h3>Premium Economy</h3>
-                                        <p>💺 Available Seats : {flight.premium_economy_seats}</p>
-                                        <p>💰 Price : ₹{flight.premium_economy_price}</p>
-                                </div>
-
-                                <div className={`class-box ${travelClass==="Business" ? "selected-class" : ""}`}>
-                                        <h3>Business</h3>
-                                        <p>💺 Available Seats : {flight.business_seats}</p>
-                                        <p>💰 Price : ₹{flight.business_price}</p>
-                                </div>
-
-                                <div className={`class-box ${travelClass==="First Class" ? "selected-class" : ""}`}>
-                                        <h3>First Class</h3>
-                                        <p>💺 Available Seats : {flight.first_class_seats}</p>
-                                        <p>💰 Price : ₹{flight.first_class_price}</p>
-                                </div>
-
-                                <button
-                                    className="hide-btn"
-                                    onClick={() => setviewremainingseats(false)}
-                                >
-                                    Hide Remaining Seats
-                                </button>
+                {/* AIRLINE HEADER */}
+                <div className="flight-card-top">
+                    <div className="flight-airline">
+                        <div className="flight-airline-icon">✈</div>
+                        <div>
+                            <h2>{flight.airline_name}</h2>
+                            <span>IndianAirConnect Partner</span>
                         </div>
-                    }
-              </div>
+                    </div>
 
-              
+                    <span className="flight-class-badge">
+                        {travelClass}
+                    </span>
+                </div>
 
-          </div>
+                {/* FLIGHT ROUTE */}
+                <div className="manage-route">
+                    <div className="flight-city">
+                        <span className="flight-city-label">FROM</span>
+                        <h1>{flight.from_city}</h1>
+                    </div>
 
-      </section>
+                    <div className="flight-route-middle">
+                        <span className="flight-route-line"></span>
+                        <span className="flight-route-icon">✈</span>
+                        <span className="flight-route-caption">DIRECT ROUTE</span>
+                    </div>
 
+                    <div className="flight-city flight-city-arrival">
+                        <span className="flight-city-label">TO</span>
+                        <h1>{flight.to_city}</h1>
+                    </div>
+                </div>
+
+                {/* FLIGHT DETAILS */}
+                <div className="manage-dates">
+                    <div className="flight-info-item">
+                        <span className="flight-info-icon">📅</span>
+                        <div>
+                            <p>Departure Date</p>
+                            <h3>{formatDate(flight.departure_date)}</h3>
+                        </div>
+                    </div>
+
+                    <div className="flight-info-item">
+                        <span className="flight-info-icon">🛫</span>
+                        <div>
+                            <p>Departure Time</p>
+                            <h3>{flight.departure_time}</h3>
+                        </div>
+                    </div>
+
+                    <div className="flight-info-item">
+                        <span className="flight-info-icon">🛬</span>
+                        <div>
+                            <p>Arrival Time</p>
+                            <h3>{flight.arrival_time}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                {/* CABIN AND PRICE */}
+                <div className="manage-class">
+                    <div className="flight-class-heading">
+                        <div>
+                            <span className="flight-section-label">
+                                YOUR SELECTED CABIN
+                            </span>
+                            <h2>{travelClass}</h2>
+                        </div>
+
+                        <div className="flight-price">
+                            <span>PRICE / PERSON</span>
+                            <strong>₹{ticketprice}</strong>
+                        </div>
+                    </div>
+
+                    {/* AVAILABLE SEATS */}
+                    {enoughSeats ? (
+                        <div className="manage-buttons">
+                            <div className="flight-seat-status">
+                                <span className="flight-status-dot"></span>
+                                <div>
+                                    <strong>{availableSeats} Seats Available</strong>
+                                    <p>
+                                        Seats available for {val} passenger(s)
+                                    </p>
+                                </div>
+                            </div>
+
+                            <button
+                                className="flight-select-btn"
+                                onClick={() => {
+                                    navigate("/seatselection", {
+                                        state: {
+                                            flight,
+                                            travelClass,
+                                            noofpeople: Number(val),
+                                            ticketprice,
+                                            availableSeats,
+                                        },
+                                    });
+                                }}
+                            >
+                                Select Seats <span>→</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flight-unavailable">
+                            <div>
+                                <strong>
+                                    Not enough seats in {travelClass}
+                                </strong>
+                                <p>
+                                    Required: {val} passenger(s) · Available: {availableSeats}
+                                </p>
+                            </div>
+
+                            <button
+                                className="view_seats"
+                                onClick={() => setviewremainingseats(true)}
+                            >
+                                View Other Classes
+                            </button>
+                        </div>
+                    )}
+
+                    {/* OTHER CABINS */}
+                    {viewremainingseats && (
+                        <div className="remaining-seats">
+                            <div className="remaining-seats-heading">
+                                <div>
+                                    <span className="flight-section-label">
+                                        CABIN AVAILABILITY
+                                    </span>
+                                    <h2>Explore Other Classes</h2>
+                                </div>
+
+                                <span className="remaining-total">
+                                    {flight.total_seats} Total Seats
+                                </span>
+                            </div>
+
+                            <div className="remaining-class-grid">
+                                {classes.map((item) => (
+                                    <div
+                                        key={item.name}
+                                        className={`class-box ${
+                                            travelClass === item.name
+                                                ? "selected-class"
+                                                : ""
+                                        }`}
+                                    >
+                                        <h3>{item.name}</h3>
+                                        <p>💺 {item.seats} seats</p>
+                                        <strong>₹{item.price}</strong>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button
+                                className="hide-btn"
+                                onClick={() => setviewremainingseats(false)}
+                            >
+                                Hide Classes ↑
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </section>
     );
 }
 

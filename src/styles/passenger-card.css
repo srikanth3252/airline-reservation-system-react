@@ -1,118 +1,235 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Poppins",sans-serif;
+
+.passenger-card {
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #e2eaf4;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 16px rgba(20, 54, 100, 0.04);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-.passenger-card
-{
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-
-    background:#ffffff;
-    padding:25px;
-    border-radius:15px;
-
-    box-shadow:0 8px 25px rgba(0,0,0,0.12);
-    border:1px solid #dbe7f3;
+.passenger-card:hover {
+  border-color: #c8d9ef;
+  box-shadow: 0 8px 24px rgba(20, 54, 100, 0.07);
 }
 
-.passenger-card h1
-{
-    color:#1565C0;
-    font-size:24px;
-    border-bottom:2px solid #dbe7f3;
-    padding-bottom:10px;
+/* Passenger heading */
+.passenger-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 26px;
 }
 
-.passenger-card-flex1
-{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
+.passenger-card-number {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0b2d5c, #1768b5);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
 }
 
-.passenger-card-flex1 label
-{
-    font-size:17px;
-    font-weight:600;
-    color:#0D47A1;
+.passenger-card-heading h2 {
+  margin: 0 0 5px;
+  color: #102b4e;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-.passenger-card-flex1 input
-{
-    width:100%;
-    padding:12px 15px;
-    font-size:16px;
-
-    border:1px solid #b0bec5;
-    border-radius:8px;
-
-    outline:none;
-    transition:0.3s;
+.passenger-card-heading p {
+  margin: 0;
+  color: #74849a;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
-.passenger-card-flex1 input:focus
-{
-    border-color:#1E88E5;
-    box-shadow:0 0 8px rgba(30,136,229,0.25);
+/* Name and age alignment */
+.passenger-card-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(120px, 1fr);
+  gap: 20px;
+  align-items: start;
 }
 
-.flex1-radio
-{
-    display:flex;
-    flex-direction: row;
-    align-items:center;
-    gap:15px;
-    flex-wrap:wrap;
+.passenger-card-flex1 {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 9px;
 }
 
-.flex1-radio label
-{
-    font-size:17px;
-    font-weight:600;
-    color:#0D47A1;
+.passenger-card-flex1 label,
+.passenger-gender-label {
+  color: #263d5c;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.flex1-radio input[type="radio"]
-{
-    transform:scale(1.15);
-    cursor:pointer;
+/* Input fields */
+.passenger-card-flex1 input {
+  width: 100%;
+  height: 48px;
+  box-sizing: border-box;
+  padding: 0 14px;
+  border: 1px solid #d8e2ef;
+  border-radius: 10px;
+  outline: none;
+  background: #fafdff;
+  color: #152d4c;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
-.flex1-radio span
-{
-    font-size:16px;
-    color:#333;
+.passenger-card-flex1 input::placeholder {
+  color: #9aa9bc;
 }
 
-.passenger-card:hover
-{
-    transform:translateY(-2px);
-    transition:0.3s;
+.passenger-card-flex1 input:hover {
+  border-color: #a9c4e4;
 }
 
-
-/* final buttons css */
-
-button {
-    transition: all 0.2s ease;
+.passenger-card-flex1 input:focus {
+  border-color: #1476d4;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(20, 118, 212, 0.10);
 }
 
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+/* Gender section */
+.flex1-radio {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
 }
 
-button:active {
-    transform: scale(0.96);
+.passenger-gender-label {
+  display: block;
 }
 
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
+/* Gender options */
+.passenger-gender-options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.passenger-gender-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 90px;
+  padding: 11px 16px;
+  box-sizing: border-box;
+  border: 1px solid #d8e2ef;
+  border-radius: 10px;
+  background: #fafdff;
+  color: #405570;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.passenger-gender-option:hover {
+  border-color: #8bb8eb;
+  background: #f0f7ff;
+}
+
+.passenger-gender-option:has(input:checked) {
+  border-color: #1476d4;
+  background: #eaf4ff;
+  color: #0757a5;
+  font-weight: 600;
+}
+
+.passenger-gender-option input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #1476d4;
+  cursor: pointer;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .passenger-card {
+    padding: 20px;
+    border-radius: 14px;
+  }
+
+  .passenger-card-fields {
+    gap: 14px;
+  }
+
+  .passenger-gender-options {
+    gap: 10px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .passenger-card {
+    padding: 17px;
+    margin-bottom: 16px;
+  }
+
+  .passenger-card-heading {
+    gap: 11px;
+    margin-bottom: 22px;
+  }
+
+  .passenger-card-number {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 10px;
+  }
+
+  .passenger-card-heading h2 {
+    font-size: 17px;
+  }
+
+  .passenger-card-heading p {
+    font-size: 12px;
+  }
+
+  .passenger-card-fields {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .passenger-card-flex1 input {
+    height: 46px;
+  }
+
+  .flex1-radio {
+    margin-top: 20px;
+  }
+
+  .passenger-gender-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .passenger-gender-option {
+    min-width: 0;
+    padding: 11px 8px;
+    gap: 6px;
+    font-size: 13px;
+  }
 }

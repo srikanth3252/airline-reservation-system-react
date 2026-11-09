@@ -398,6 +398,16 @@ async function handlePrintAndSend() {
 
             </div>
 
+            <div className="footer">
+    <h2>
+        🎉 Thank You For Choosing Our Airline
+    </h2>
+
+    <p>
+        Have a Safe and Pleasant Journey.
+    </p>
+</div>
+
         </section>
 
     );

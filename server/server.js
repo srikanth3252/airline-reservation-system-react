@@ -1245,6 +1245,151 @@ app.post("/get_flightsdata", (req, res) => {
 
 });
 
+
+app.post("/check_profile_completion", async (req, res) => {
+    try {
+        const { userid } = req.body;
+
+        if (!userid) {
+            return res.json({
+                success: false,
+                complete: false,
+                message: "User ID is required"
+            });
+        }
+
+        const [rows] = await db.query(
+            "SELECT * FROM profile WHERE userid = ?",
+            [userid]
+        );
+
+        if (rows.length === 0) {
+            return res.json({
+                success: true,
+                complete: false,
+                message: "Profile not found"
+            });
+        }
+
+        const profile = rows[0];
+
+        const requiredFields = [
+            "fullname",
+            "dob",
+            "gender",
+            "phonenumber",
+            "nationality",
+            "address",
+            "city",
+            "state",
+            "country",
+            "pincode",
+            "aadhaar"
+        ];
+
+        const missingFields = requiredFields.filter(
+            field => !String(profile[field] || "").trim()
+        );
+
+        return res.json({
+            success: true,
+            complete: missingFields.length === 0,
+            missingFields,
+            message:
+                missingFields.length === 0
+                    ? "Profile completed"
+                    : "Please complete your profile"
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            complete: false,
+            message: "Server error"
+        });
+    }
+});
+
+
+
+app.get("/search_flights", async (req, res) => {
+    try {
+        const keyword = String(req.query.keyword || "").trim();
+
+        let sql = `
+            SELECT
+                flight_id,
+                airline_name,
+                flight_number,
+                from_city,
+                to_city,
+                departure_date,
+                departure_time,
+                arrival_time,
+                total_seats,
+                economy_seats,
+                premium_economy_seats,
+                business_seats,
+                first_class_seats,
+                economy_price,
+                premium_economy_price,
+                business_price,
+                first_class_price
+            FROM flights
+        `;
+
+        let values = [];
+
+        if (keyword !== "") {
+            sql += `
+                WHERE airline_name LIKE ?
+                   OR flight_number LIKE ?
+                   OR from_city LIKE ?
+                   OR to_city LIKE ?
+            `;
+
+            const search = `%${keyword}%`;
+
+            values = [
+                search,
+                search,
+                search,
+                search
+            ];
+        }
+
+        sql += ` ORDER BY departure_date ASC, departure_time ASC`;
+
+        const [flights] = await db.query(sql, values);
+
+        if (flights.length === 0) {
+            return res.status(200).json({
+                success: false,
+                message: "No flights found for your search",
+                data: []
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Flights fetched successfully",
+            data: flights
+        });
+
+    } catch (error) {
+        console.error("Search flights error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to search flights",
+            data: []
+        });
+    }
+});
+
+
 // Start Server
 app.listen(port, () => {
     console.log(`Server is running at port ${port}`);
