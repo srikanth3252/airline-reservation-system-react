@@ -1246,6 +1246,7 @@ app.post("/get_flightsdata", (req, res) => {
 });
 
 
+
 app.post("/check_profile_completion", (req, res) => {
     const { userid } = req.body;
 
@@ -1257,15 +1258,16 @@ app.post("/check_profile_completion", (req, res) => {
     }
 
     const sql = `
-        SELECT fullname, dob, gender, phonenumber, nationality,
-               address, city, state, country, pincode, aadhaar
+        SELECT fullname, dob, gender, phonenumber,
+               nationality, address, city, state,
+               country, pincode, aadhaar
         FROM profile
         WHERE userid = ?
     `;
 
     db.query(sql, [userid], (err, rows) => {
         if (err) {
-            console.error("Profile completion DB error:", err);
+            console.error("Profile completion error:", err);
 
             return res.status(500).json({
                 success: false,
@@ -1284,7 +1286,8 @@ app.post("/check_profile_completion", (req, res) => {
         const profile = rows[0];
 
         const completed = Object.values(profile).every(
-            value => value !== null && String(value).trim() !== ""
+            value => value !== null &&
+                     String(value).trim() !== ""
         );
 
         return res.json({
@@ -1296,6 +1299,7 @@ app.post("/check_profile_completion", (req, res) => {
         });
     });
 });
+
 
 
 
