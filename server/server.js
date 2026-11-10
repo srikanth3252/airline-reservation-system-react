@@ -1299,80 +1299,65 @@ app.post("/check_profile_completion", async (req, res) => {
 
 
 
-app.get("/search_flights", async (req, res) => {
-    try {
-        const keyword = String(req.query.keyword || "").trim();
 
-        let sql = `
-            SELECT
-                flight_id,
-                airline_name,
-                flight_number,
-                from_city,
-                to_city,
-                departure_date,
-                departure_time,
-                arrival_time,
-                total_seats,
-                economy_seats,
-                premium_economy_seats,
-                business_seats,
-                first_class_seats,
-                economy_price,
-                premium_economy_price,
-                business_price,
-                first_class_price
-            FROM flights
+app.get("/search_flights", (req, res) => {
+    const keyword = String(req.query.keyword || "").trim();
+
+    let sql = `
+        SELECT *
+        FROM flights
+    `;
+
+    let params = [];
+
+    if (keyword !== "") {
+        sql += `
+            WHERE LOWER(airline_name) LIKE LOWER(?)
+            OR LOWER(flight_number) LIKE LOWER(?)
+            OR LOWER(from_city) LIKE LOWER(?)
+            OR LOWER(to_city) LIKE LOWER(?)
         `;
 
-        let values = [];
+        const searchTerm = `%${keyword}%`;
 
-        if (keyword !== "") {
-            sql += `
-                WHERE airline_name LIKE ?
-                   OR flight_number LIKE ?
-                   OR from_city LIKE ?
-                   OR to_city LIKE ?
-            `;
+        params = [
+            searchTerm,
+            searchTerm,
+            searchTerm,
+            searchTerm
+        ];
+    }
 
-            const search = `%${keyword}%`;
+    sql += `
+        ORDER BY departure_date ASC, departure_time ASC
+    `;
 
-            values = [
-                search,
-                search,
-                search,
-                search
-            ];
-        }
+    db.query(sql, params, (err, results) => {
+        if (err) {
+            console.error("Flight search error:", err);
 
-        sql += ` ORDER BY departure_date ASC, departure_time ASC`;
-
-        const [flights] = await db.query(sql, values);
-
-        if (flights.length === 0) {
-            return res.status(200).json({
+            return res.status(500).json({
                 success: false,
-                message: "No flights found for your search",
-                data: []
+                message: "Database error while searching flights."
             });
         }
 
-        return res.status(200).json({
+        if (results.length === 0) {
+            return res.json({
+                success: false,
+                data: [],
+                message: "No flights found."
+            });
+        }
+
+        return res.json({
             success: true,
-            message: "Flights fetched successfully",
-            data: flights
+            data: results,
+            message: "Flights found successfully."
         });
-
-    } catch (error) {
-        console.error("Search flights error:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Unable to search flights",
-            data: []
-        });
-    }
+    });
 });
+
 
 
 // Start Server
