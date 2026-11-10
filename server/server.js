@@ -1246,27 +1246,35 @@ app.post("/get_flightsdata", (req, res) => {
 });
 
 
-app.post("/check_profile_completion", async (req, res) => {
-    try {
-        const { userid } = req.body;
+app.post("/check_profile_completion", (req, res) => {
+    const { userid } = req.body;
 
-        if (!userid) {
-            return res.status(400).json({
+    if (!userid) {
+        return res.status(400).json({
+            success: false,
+            message: "User ID is required"
+        });
+    }
+
+    const sql = `
+        SELECT fullname, dob, gender, phonenumber, nationality,
+               address, city, state, country, pincode, aadhaar
+        FROM profile
+        WHERE userid = ?
+    `;
+
+    db.query(sql, [userid], (err, rows) => {
+        if (err) {
+            console.error("Profile completion DB error:", err);
+
+            return res.status(500).json({
                 success: false,
-                message: "User ID is required"
+                message: "Database error while checking profile"
             });
         }
 
-        const [rows] = await db.query(
-            `SELECT fullname, dob, gender, phonenumber, nationality,
-                    address, city, state, country, pincode, aadhaar
-             FROM profile
-             WHERE userid = ?`,
-            [userid]
-        );
-
         if (rows.length === 0) {
-            return res.status(200).json({
+            return res.json({
                 success: true,
                 completed: false,
                 message: "Profile not found"
@@ -1279,23 +1287,16 @@ app.post("/check_profile_completion", async (req, res) => {
             value => value !== null && String(value).trim() !== ""
         );
 
-        return res.status(200).json({
+        return res.json({
             success: true,
             completed,
             message: completed
                 ? "Profile completed"
                 : "Please complete your profile"
         });
-
-    } catch (error) {
-        console.error("Profile completion error:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Server error"
-        });
-    }
+    });
 });
+
 
 
 
