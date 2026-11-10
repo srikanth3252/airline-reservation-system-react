@@ -229,10 +229,15 @@ function Seatselection() {
         return;
       }
 
-      if (!data.complete) {
-        setProfilePopup(true);
-        return;
-      }
+      
+    if (!data.completed) {
+    setProfilePopup(true);
+    return;
+    }
+
+// Profile completed: continue booking
+    hanldenavigation(selectedSeats);
+
 
       // Profile completed: continue booking
       hanldenavigation(selectedSeats);

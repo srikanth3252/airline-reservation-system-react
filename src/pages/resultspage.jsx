@@ -43,18 +43,21 @@ function Flightresutls() {
                 setMessage(response.data.message || "No flights found.");
             }
 
-        } catch (error) {
-            console.error("Flight search error:", error);
+        } catch (error) 
+        {
+    console.error(
+        "Flight search error:",
+        error.response?.status,
+        error.response?.data || error.message
+    );
 
-            setData([]);
-            setMessage(
-                error.response?.data?.message ||
-                "Unable to fetch flights. Please try again."
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
+    setData([]);
+
+    setMessage(
+        error.response?.data?.message ||
+        "Unable to fetch flights. Please try again."
+    );
+    }
 
     // Search form submit
     const handleSearch = (e) => {

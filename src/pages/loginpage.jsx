@@ -18,8 +18,10 @@ function Loginpage() {
 
     const [userid, setuserid] = useState("");
     const [password, setpassword] = useState("");
+
     const [signupuserid, signupsetuserid] = useState("");
     const [signuppassword, signupsetpassword] = useState("");
+
     const [email, setemail] = useState("");
     const [otp, setotp] = useState("");
     const [otpVerified, setOtpVerified] = useState(false);
@@ -37,22 +39,28 @@ function Loginpage() {
     const [missingsignuppassword, setmissingsignuppassword] = useState(false);
     const [missingsignupuserid, setmissingsignupuserid] = useState(false);
 
+    // Logout message
     useEffect(() => {
         const timer = setTimeout(() => setshowlogout(false), 3000);
         return () => clearTimeout(timer);
     }, []);
 
-    useEffect(() => {
-        localStorage.setItem("userid", userid);
-    }, [userid]);
+    // IMPORTANT:
+    // Do NOT store userid here.
+    // User ID is stored only after successful login.
 
     function handleresetpassword() {
         navigate("/reset_password");
     }
 
+    // Popup actions
     function handleProceed() {
-        if (popupAction === "otp-send" || popupAction === "email-exists" ||
-            popupAction === "otp-error" || popupAction === "login-failed") {
+        if (
+            popupAction === "otp-send" ||
+            popupAction === "email-exists" ||
+            popupAction === "otp-error" ||
+            popupAction === "login-failed"
+        ) {
             setShowPopup(false);
         } else if (popupAction === "otp-verified") {
             setShowPopup(false);
@@ -67,21 +75,25 @@ function Loginpage() {
         }
     }
 
+    // ================= LOGIN =================
     async function handlesubmit(e) {
         e.preventDefault();
 
-        if (userid.trim() === "" && password.trim() === "") {
+        const enteredUserid = userid.trim();
+
+        if (enteredUserid === "" && password === "") {
             setmissinguserid(true);
             setmissingpassword(true);
             return;
         }
-        if (userid.trim() === "") {
+
+        if (enteredUserid === "") {
             setmissinguserid(true);
             return;
         }
         setmissinguserid(false);
 
-        if (password.trim() === "") {
+        if (password === "") {
             setmissingpassword(true);
             return;
         }
@@ -92,35 +104,61 @@ function Loginpage() {
                 "https://airline-backend-zdo5.onrender.com/verify_for_login",
                 {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userid, password })
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        userid: enteredUserid,
+                        password: password
+                    })
                 }
             );
 
             const data = await res.json();
 
-            if (data.success) {
-               localStorage.setItem("userid", data.userid);
-                navigate("/flightssearchpage", { replace: true });
-            } else {
+            // Login failed
+            if (!res.ok || !data.success) {
                 setPopupTitle("Login Failed");
                 setPopupMessage(
-                    "The User ID or Password you entered is incorrect. Please check your credentials and try again."
+                    data.message ||
+                    "The User ID or Password you entered is incorrect."
                 );
                 setPopupType("error");
                 setPopupAction("login-failed");
                 setShowPopup(true);
+                return;
             }
+
+            // IMPORTANT: Backend must return userid on successful login
+            if (!data.userid) {
+                throw new Error("User ID missing from backend login response");
+            }
+
+            // Store the authenticated userid
+            localStorage.setItem("userid", String(data.userid));
+
+            // Clear password
+            setpassword("");
+
+            // Navigate to flight search
+            navigate("/flightssearchpage", {
+                replace: true
+            });
+
         } catch (err) {
-            console.log(err);
+            console.error("Login error:", err);
+
             setPopupTitle("Server Error");
-            setPopupMessage("Unable to connect to the server. Please try again.");
+            setPopupMessage(
+                "Unable to connect to the server. Please try again."
+            );
             setPopupType("error");
             setPopupAction("login-failed");
             setShowPopup(true);
         }
     }
 
+    // ================= SEND OTP =================
     async function handlesendotp() {
         if (otpCooldown) return;
 
@@ -128,6 +166,7 @@ function Loginpage() {
             setmissingemail(true);
             return;
         }
+
         setmissingemail(false);
 
         setOtpCooldown(true);
@@ -149,8 +188,12 @@ function Loginpage() {
                 "https://airline-backend-zdo5.onrender.com/send-otp",
                 {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email })
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: email.trim()
+                    })
                 }
             );
 
@@ -170,7 +213,7 @@ function Loginpage() {
             if (data.message === "Email already exists") {
                 setPopupTitle("Email Already Registered");
                 setPopupMessage(
-                    "An account with this email address already exists. Please use a different email address or sign in with your existing account."
+                    "An account with this email address already exists. Please use a different email address or sign in."
                 );
                 setPopupType("error");
                 setPopupAction("email-exists");
@@ -179,24 +222,33 @@ function Loginpage() {
             }
 
             setPopupTitle("OTP Sending Failed");
-            setPopupMessage(data.message || "Unable to send OTP. Please try again.");
+            setPopupMessage(
+                data.message || "Unable to send OTP. Please try again."
+            );
             setPopupType("error");
             setPopupAction("otp-error");
             setShowPopup(true);
+
         } catch (err) {
+            console.error("OTP error:", err);
+
             setPopupTitle("Server Error");
-            setPopupMessage("Unable to connect to the server. Please try again later.");
+            setPopupMessage(
+                "Unable to connect to the server. Please try again later."
+            );
             setPopupType("error");
             setPopupAction("otp-error");
             setShowPopup(true);
         }
     }
 
+    // ================= VERIFY OTP =================
     async function handleverifyotp() {
         if (otp.trim() === "") {
             setmissingotp(true);
             return;
         }
+
         setmissingotp(false);
 
         try {
@@ -204,17 +256,22 @@ function Loginpage() {
                 "https://airline-backend-zdo5.onrender.com/verify-otp",
                 {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, otp })
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: email.trim(),
+                        otp: otp.trim()
+                    })
                 }
             );
 
             const data = await res.json();
 
-            if (data.success) {
+            if (res.ok && data.success) {
                 setPopupTitle("OTP Verified");
                 setPopupMessage(
-                    "Your email has been verified successfully. You can now create your User ID and Password to complete your registration."
+                    "Your email has been verified successfully. You can now create your User ID and Password."
                 );
                 setPopupType("success");
                 setPopupAction("otp-verified");
@@ -224,12 +281,16 @@ function Loginpage() {
 
             setPopupTitle("Invalid OTP");
             setPopupMessage(
-                "The OTP you entered is incorrect. Please check your email and enter the correct OTP to continue."
+                data.message ||
+                "The OTP you entered is incorrect. Please check your email."
             );
             setPopupType("error");
             setPopupAction("Invalid OTP");
             setShowPopup(true);
+
         } catch (err) {
+            console.error("OTP verification error:", err);
+
             setPopupTitle("Server Error");
             setPopupMessage("Unable to verify OTP. Please try again.");
             setPopupType("error");
@@ -238,14 +299,9 @@ function Loginpage() {
         }
     }
 
+    // ================= SIGNUP =================
     async function handlesignup(e) {
         e.preventDefault();
-
-        if (signupuserid.trim() === "" && signuppassword.trim() === "") {
-            setmissingsignupuserid(true);
-            setmissingsignuppassword(true);
-            return;
-        }
 
         if (signupuserid.trim() === "") {
             setmissingsignupuserid(true);
@@ -253,7 +309,7 @@ function Loginpage() {
         }
         setmissingsignupuserid(false);
 
-        if (signuppassword.trim() === "") {
+        if (signuppassword === "") {
             setmissingsignuppassword(true);
             return;
         }
@@ -264,18 +320,20 @@ function Loginpage() {
                 "https://airline-backend-zdo5.onrender.com/sign-up",
                 {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({
-                        email,
-                        signupuserid,
-                        signuppassword
+                        email: email.trim(),
+                        signupuserid: signupuserid.trim(),
+                        signuppassword: signuppassword
                     })
                 }
             );
 
             const data = await res.json();
 
-            if (data.success) {
+            if (res.ok && data.success) {
                 setPopupTitle("Registration Successful");
                 setPopupMessage(
                     "Your account has been created successfully. You can now login and start booking your flights with Indian AirConnect Airlines."
@@ -285,24 +343,36 @@ function Loginpage() {
                 setShowPopup(true);
             } else {
                 setPopupTitle("Registration Failed");
-                setPopupMessage(data.message || "Unable to create your account.");
+                setPopupMessage(
+                    data.message || "Unable to create your account."
+                );
                 setPopupType("error");
                 setPopupAction("otp-error");
                 setShowPopup(true);
             }
+
         } catch (err) {
-            console.log("Signup error:", err);
+            console.error("Signup error:", err);
+
             setPopupTitle("Server Error");
-            setPopupMessage("Unable to connect to the server. Please try again.");
+            setPopupMessage(
+                "Unable to connect to the server. Please try again."
+            );
             setPopupType("error");
             setPopupAction("otp-error");
             setShowPopup(true);
         }
     }
 
+    // ================= UI =================
     return (
         <div className="loginpage">
-            {showlogout && <div className="showlogout">Logout Successfully</div>}
+
+            {showlogout && (
+                <div className="showlogout">
+                    Logout Successfully
+                </div>
+            )}
 
             {showPopup && (
                 <Popup
@@ -313,13 +383,16 @@ function Loginpage() {
                 />
             )}
 
+            {/* NAVBAR */}
             <nav className="air-login-navbar">
                 <Link to="/" className="air-login-brand">
                     <span className="brand-plane">✈</span>
-                    <span>Indian <strong>AirConnect</strong>
+                    <span>
+                        Indian <strong>AirConnect</strong>
                         <small>AIRLINES</small>
                     </span>
                 </Link>
+
                 <div className="air-login-navlinks">
                     <Link to="/">Home</Link>
                     <a href="#login-form">Flights</a>
@@ -328,84 +401,160 @@ function Loginpage() {
                 </div>
             </nav>
 
+            {/* MAIN */}
             <main className="air-login-hero">
+
                 <section className="air-login-promo">
-                    <span className="promo-tag">YOUR JOURNEY STARTS HERE</span>
-                    <h1>Fly Higher.<br />Travel <span>Smarter.</span></h1>
+                    <span className="promo-tag">
+                        YOUR JOURNEY STARTS HERE
+                    </span>
+
+                    <h1>
+                        Fly Higher.<br />
+                        Travel <span>Smarter.</span>
+                    </h1>
+
                     <div className="promo-line"></div>
-                    <p>Book your flights, manage bookings<br />
-                        and travel with comfort.</p>
+
+                    <p>
+                        Book your flights, manage bookings<br />
+                        and travel with comfort.
+                    </p>
+
                     <div className="promo-plane">✈</div>
                 </section>
 
+                {/* LOGIN CARD */}
                 <section className="login-card" id="login-form">
+
                     <div className="login-header">
+
                         <div className="login-card-brand">
                             <span>✈</span> Indian <strong>AirConnect</strong>
                             <small>AIRLINES</small>
                         </div>
 
                         <h2>{login ? "Welcome Back" : "Create Account"}</h2>
-                        <p>{login ? "Login to continue your journey" : "Join us for your next journey"}</p>
+
+                        <p>
+                            {login
+                                ? "Login to continue your journey"
+                                : "Join us for your next journey"}
+                        </p>
 
                         <div className="login-options">
                             <button
                                 type="button"
                                 className={login ? "login active" : "login"}
-                                onClick={() => { setlogin(true); setsignup(false); }}
-                            >Login</button>
+                                onClick={() => {
+                                    setlogin(true);
+                                    setsignup(false);
+                                }}
+                            >
+                                Login
+                            </button>
+
                             <button
                                 type="button"
                                 className={signup ? "signup active" : "signup"}
-                                onClick={() => { setsignup(true); setlogin(false); }}
-                            >Create Account</button>
+                                onClick={() => {
+                                    setsignup(true);
+                                    setlogin(false);
+                                }}
+                            >
+                                Create Account
+                            </button>
                         </div>
                     </div>
 
+                    {/* LOGIN FORM */}
                     {login && (
-                        <form className="air-login-form" onSubmit={handlesubmit}>
+                        <form
+                            className="air-login-form"
+                            onSubmit={handlesubmit}
+                        >
+
                             <div className="flex1">
                                 <label>User ID</label>
+
                                 <input
                                     type="text"
+                                    autoComplete="username"
                                     placeholder="Enter your User ID"
                                     value={userid}
                                     onChange={(e) => setuserid(e.target.value)}
                                 />
-                                {missinguserid && <p className="p2">Please enter your user ID.</p>}
+
+                                {missinguserid && (
+                                    <p className="p2">
+                                        Please enter your user ID.
+                                    </p>
+                                )}
                             </div>
 
                             <div className="flex1">
                                 <label>Password</label>
+
                                 <input
                                     type="password"
+                                    autoComplete="current-password"
                                     placeholder="Enter your password"
                                     value={password}
                                     onChange={(e) => setpassword(e.target.value)}
                                 />
-                                {missingpassword && <p className="p2">Please enter your password.</p>}
+
+                                {missingpassword && (
+                                    <p className="p2">
+                                        Please enter your password.
+                                    </p>
+                                )}
                             </div>
 
-                            <button type="button" className="forgot-btn" onClick={handleresetpassword}>
+                            <button
+                                type="button"
+                                className="forgot-btn"
+                                onClick={handleresetpassword}
+                            >
                                 Forgot Password?
                             </button>
 
-                            <button type="submit" className="submit-btn1">✈ &nbsp; Sign In</button>
+                            <button
+                                type="submit"
+                                className="submit-btn1"
+                            >
+                                ✈ &nbsp; Sign In
+                            </button>
+
                         </form>
                     )}
 
+                    {/* SIGNUP FORM */}
                     {signup && (
-                        <form className="air-login-form" onSubmit={handlesignup}>
+                        <form
+                            className="air-login-form"
+                            onSubmit={handlesignup}
+                        >
+
                             <div className="flex1">
                                 <label>Email Address</label>
+
                                 <input
                                     type="email"
+                                    autoComplete="email"
                                     placeholder="Enter your email"
                                     value={email}
                                     onChange={(e) => setemail(e.target.value)}
                                 />
-                                <p className="field-help">Email is required for verification.</p>
-                                {missingemail && <p className="p2">Please enter your email address.</p>}
+
+                                <p className="field-help">
+                                    Email is required for verification.
+                                </p>
+
+                                {missingemail && (
+                                    <p className="p2">
+                                        Please enter your email address.
+                                    </p>
+                                )}
                             </div>
 
                             <button
@@ -414,52 +563,91 @@ function Loginpage() {
                                 onClick={handlesendotp}
                                 disabled={otpCooldown}
                             >
-                                {otpCooldown ? `Resend OTP in ${remainingTime}s` : "Send OTP"}
+                                {otpCooldown
+                                    ? `Resend OTP in ${remainingTime}s`
+                                    : "Send OTP"}
                             </button>
 
                             <div className="flex1">
                                 <label>Verification OTP</label>
+
                                 <input
                                     type="text"
                                     inputMode="numeric"
                                     maxLength="6"
+                                    autoComplete="one-time-code"
                                     placeholder="Enter OTP"
                                     value={otp}
                                     onChange={(e) => setotp(e.target.value)}
                                 />
-                                {missingotp && <p className="p2">Please enter the OTP.</p>}
+
+                                {missingotp && (
+                                    <p className="p2">
+                                        Please enter the OTP.
+                                    </p>
+                                )}
                             </div>
 
-                            <button type="button" className="submit-btn1 secondary-submit" onClick={handleverifyotp}>
+                            <button
+                                type="button"
+                                className="submit-btn1 secondary-submit"
+                                onClick={handleverifyotp}
+                            >
                                 Verify OTP
                             </button>
 
                             {otpVerified && (
                                 <>
-                                    <div className="verified-message">✓ Email verified successfully</div>
+                                    <div className="verified-message">
+                                        ✓ Email verified successfully
+                                    </div>
+
                                     <div className="flex1">
                                         <label>Create User ID</label>
+
                                         <input
                                             type="text"
+                                            autoComplete="username"
                                             placeholder="Create your User ID"
                                             value={signupuserid}
-                                            onChange={(e) => signupsetuserid(e.target.value)}
+                                            onChange={(e) =>
+                                                signupsetuserid(e.target.value)
+                                            }
                                         />
-                                        {missingsignupuserid && <p className="p2">Please enter the User ID.</p>}
+
+                                        {missingsignupuserid && (
+                                            <p className="p2">
+                                                Please enter the User ID.
+                                            </p>
+                                        )}
                                     </div>
 
                                     <div className="flex1">
                                         <label>Create Password</label>
+
                                         <input
                                             type="password"
+                                            autoComplete="new-password"
                                             placeholder="Create your password"
                                             value={signuppassword}
-                                            onChange={(e) => signupsetpassword(e.target.value)}
+                                            onChange={(e) =>
+                                                signupsetpassword(e.target.value)
+                                            }
                                         />
-                                        {missingsignuppassword && <p className="p2">Please enter the password.</p>}
+
+                                        {missingsignuppassword && (
+                                            <p className="p2">
+                                                Please enter the password.
+                                            </p>
+                                        )}
                                     </div>
 
-                                    <button type="submit" className="submit-btn1">Create Account</button>
+                                    <button
+                                        type="submit"
+                                        className="submit-btn1"
+                                    >
+                                        Create Account
+                                    </button>
                                 </>
                             )}
                         </form>
@@ -469,21 +657,36 @@ function Loginpage() {
                         <span>✈</span>
                         <p>Travel with comfort. Fly with confidence.</p>
                     </div>
+
                 </section>
             </main>
 
+            {/* FOOTER */}
             <footer className="air-login-footer" id="air-footer">
-                <Link to="/" className="air-login-brand footer-brand">
+
+                <Link
+                    to="/"
+                    className="air-login-brand footer-brand"
+                >
                     <span className="brand-plane">✈</span>
-                    <span>Indian <strong>AirConnect</strong><small>AIRLINES</small></span>
+                    <span>
+                        Indian <strong>AirConnect</strong>
+                        <small>AIRLINES</small>
+                    </span>
                 </Link>
+
                 <div className="footer-links">
                     <a href="#air-footer">Privacy Policy</a>
                     <a href="#air-footer">Terms & Conditions</a>
                     <a href="#air-footer">Help & Support</a>
                 </div>
-                <p>© 2026 Indian AirConnect Airlines. All Rights Reserved.</p>
+
+                <p>
+                    © 2026 Indian AirConnect Airlines. All Rights Reserved.
+                </p>
+
             </footer>
+
         </div>
     );
 }

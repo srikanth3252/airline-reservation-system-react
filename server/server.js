@@ -292,33 +292,42 @@ app.post("/sign-up", async (req, res) => {
 
 
 
-app.post("/verify_for_login", (req, res) => {
 
+app.post("/verify_for_login", (req, res) => {
     const { userid, password } = req.body;
 
-    const query = "SELECT * FROM users WHERE userid=?";
+    // Validate input
+    if (!userid || !password) {
+        return res.status(400).json({
+            success: false,
+            message: "User ID and password are required"
+        });
+    }
 
-    db.query(query, [userid], async (error, result) => {
+    const query = "SELECT userid, password FROM users WHERE userid = ?";
 
+    db.query(query, [userid.trim()], async (error, result) => {
         if (error) {
+            console.error("Login database error:", error);
 
             return res.status(500).json({
-                message: error.message,
-                success: false
+                success: false,
+                message: "Database error during login"
             });
         }
 
+        // User ID not found
         if (result.length === 0) {
             return res.status(401).json({
-                message: "Invalid User ID or Password.",
-                success: false
+                success: false,
+                message: "Invalid User ID or Password"
             });
         }
 
         const user = result[0];
 
         try {
-
+            // Compare entered password with stored bcrypt hash
             const match = await bcrypt.compare(
                 password,
                 user.password
@@ -326,26 +335,27 @@ app.post("/verify_for_login", (req, res) => {
 
             if (!match) {
                 return res.status(401).json({
-                    message: "Invalid User ID or Password.",
-                    success: false
+                    success: false,
+                    message: "Invalid User ID or Password"
                 });
             }
 
+            // Login successful
             return res.status(200).json({
+                success: true,
                 message: "Login Successful",
-                success: true
+                userid: user.userid
             });
 
         } catch (err) {
+            console.error("Password comparison error:", err);
 
             return res.status(500).json({
-                message: "Login failed",
-                success: false
+                success: false,
+                message: "Login verification failed"
             });
         }
-
     });
-
 });
 
 // password reset route
