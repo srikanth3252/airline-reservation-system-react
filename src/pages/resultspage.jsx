@@ -42,22 +42,23 @@ function Flightresutls() {
                 setData([]);
                 setMessage(response.data.message || "No flights found.");
             }
+        } catch (error) {
+            console.error(
+                "Flight search error:",
+                error.response?.status,
+                error.response?.data || error.message
+            );
 
-        } catch (error) 
-        {
-    console.error(
-        "Flight search error:",
-        error.response?.status,
-        error.response?.data || error.message
-    );
+            setData([]);
 
-    setData([]);
-
-    setMessage(
-        error.response?.data?.message ||
-        "Unable to fetch flights. Please try again."
-    );
-    }
+            setMessage(
+                error.response?.data?.message ||
+                "Unable to fetch flights. Please try again."
+            );
+        } finally {
+            setLoading(false);
+        }
+    }; // ✅ Missing closure fixed here
 
     // Search form submit
     const handleSearch = (e) => {
@@ -176,9 +177,7 @@ function Flightresutls() {
                                 : "Available Flights"}
                         </h2>
 
-                        <span>
-                            {data.length} flight(s)
-                        </span>
+                        <span>{data.length} flight(s)</span>
                     </div>
 
                     {loading ? (
